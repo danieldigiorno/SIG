@@ -27,6 +27,9 @@ require([
     "esri/Graphic",
     "esri/widgets/Widget",
     "esri/layers/FeatureLayer",
+    "esri/symbols/SimpleMarkerSymbol",
+    "esri/symbols/SimpleLineSymbol",
+
   ]
   function(urlUtils, esriConfig, Map, Print, PrintTemplate, Locator, esriId, DistanceParameters, FeatureLayer, Geometry,
     Tiled, DynamicMapServiceLayer, GraphicsLayer, Search, Draw, Point, SimpleMarkerSymbol, SimpleLineSymbol,
@@ -35,12 +38,15 @@ require([
 
      //Creo el mapa
     myMap = new Map({
-        basemap: 'streets', 
+        fadeOnZoom: true
         zoom:4, 
         minZoom:4, 
-        
         smartNavigation:false
     });
+
+    // Cargar mapa base
+    var tiled = new Tiled("http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer");
+    map.addLayer(tiled);
 
     //Creo la vista del mapa
     var view = new MapView({
@@ -55,7 +61,7 @@ require([
       {
         locator: new Locator(locatorUrl),
         placeholder: "Geocodificacion",
-        countryCode: "US",
+        countryCode: "US"
       }
     ],
     map: myMap
@@ -64,35 +70,73 @@ require([
   search.on ("search-results", searchHandler);
 
    // Símbolo para los puntos
-   var markerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
-   markerSymbol.setColor(new Color("#0101DF"));
-   markerSymbol.setSize(13);
+   var markerSymbol = {
+    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+    style: "circle",
+    color: "blue",
+    size: "12px",  // pixels
 
-    // Símbolo para el móvil
-  var movilSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
-  movilSymbol.setPath("M16,3.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.143,7.5,18.121,7.5,18.121S23.5,15.143,23.5,11C23.5,6.858,20.143,3.5,16,3.5z M16,14.584c-1.979,0-3.584-1.604-3.584-3.584S14.021,7.416,16,7.416S19.584,9.021,19.584,11S17.979,14.584,16,14.584z");
-  movilSymbol.setOffset(0, 15);
-  movilSymbol.setColor(new Color("#FF4500"));
-  movilSymbol.setSize(20);
+  };
+  
+   // Símbolo para el móvil
+  var markerSymbol = {
+    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+    style: "square",
+    color: "blue",
+    size: "20px",  // pixels
+    xoffset:0,
+    yoffset:15
+  };
+  
+
 
     //Símbolo para la ruta
-    var routeSymbol = new SimpleLineSymbol().setColor(new Color([0,0,255,0.5])).setWidth(4);
+    var symbol = {
+      type: "simple-line",  // autocasts as new SimpleLineSymbol()
+      color: "lightblue",
+      width: "4px",
+      style: "short-dot"
+    };
      
     // Capa donde se traen los puntos del servicio
     puntosServicioLayer = new GraphicsLayer({opacity:0.9});
     
     //Cargar puntos del servidor
   var pointsFL = FeatureLayer({
-  url:"http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0"
+  url:"http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0",
     //mode: FeatureLayer.MODE_SNAPSHOT,
-    //outFields: ["*"]
+    outFields: ["*"], 
+    source: [markerSymbol]
   });
-  pointsFL.setSelectionSymbol(markerSymbol);
-  
+
   //Cargar servicio de ruteo
     var routeTask = new RouteTask({
-        url: "https://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World"
+        url: "http://route.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World?token="+token.access_token
      });
      routeParams = new RouteParameters();
      routeParams.stops = new FeatureSet();
+    // routeParams.outSpatialReference = {"wkid":102100};
+
+  // Capa Ruta
+    var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
+    var symbol = new SimpleFillSymbol();
+
+    // Botón calcular ruta: Calcula la ruta para los STOPs ingresados
+    on(dom.byId("rutaBtn"), "click", calcularRuta);
+    function calcularRuta(){
+      routeTask.solve(routeParams, dibujarRuta);
+    }
+    // Botón borrar rutas: Limpia las rutas dibujadas del mapa y de la lista
+  on(dom.byId("borrarRutaBtn"), "click", borrarRutas);
+  function borrarRutas() {
+    for (var i=routes.length-1; i>=0; i--) {
+      map.graphics.remove(routes.splice(i, 1)[0]);
+    }
+    routes = [];
+    routeGraphicLayer.clear();
+    if (rutaServicioLayer !== undefined) {
+      rutaServicioLayer.clear();
+    }
+    $('#borrarRutaBtn').prop('disabled', true);
+  }
     }); 
