@@ -1,14 +1,6 @@
 
-var map, search,routeTask, routeParams, routes = [], puntos = [];
-var routeGraphicLayer;
-var terminarSIM = false;
-var iter, salto = 0;
-var distanciaPuntos = 0;
-var stateActual = "";
-var stateAnterior = "";
-var color_actual = 1;
-var puntosServicioLayer;
-var rutaServicioLayer;
+var map, search,routeTask, routeParams, rutas = [], puntos = [];
+
 require([
   "esri/map",
   "esri/tasks/locator",
@@ -38,7 +30,13 @@ require([
 ], function (Map, Locator,Search, ArcGISTiledMapServiceLayer,SimpleMarkerSymbol,SimpleLineSymbol,GraphicsLayer,SimpleFillSymbol,FeatureLayer, RouteTask, RouteParameters,
     FeatureSet ,Color,Geometry,GeometryEngine,Point,Graphic,QueryTask, Query,Print,array,dom,on) {
   
-  
+      var terminarSIM = false;
+      var iter, salto = 0;
+      var distanciaPuntos = 0;
+      var stateActual = "";
+      var stateAnterior = "";
+      var color_actual = 1;
+      var rutaServicioLayer;
 
   /*
   $.ajax({
@@ -60,179 +58,109 @@ require([
     }
   });
   */
+ 
+/**********************************************Simbolos********************************************************************************* */
+  // Símbolos para los puntos
+  var simboloPunto = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
+  simboloPunto.setColor(new Color([230, 0, 0, 1]));
+  simboloPunto.setSize(12);
+
+  // Símbolo para el móvil
+  var simboloMovil = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_SQUARE);
+  simboloMovil.setPath("M16,3.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.143,7.5,18.121,7.5,18.121S23.5,15.143,23.5,11C23.5,6.858,20.143,3.5,16,3.5z M16,14.584c-1.979,0-3.584-1.604-3.584-3.584S14.021,7.416,16,7.416S19.584,9.021,19.584,11S17.979,14.584,16,14.584z");
+  simboloMovil.setOffset(0, 20);
+  //simboloMovil.setColor(new Color([133, 133, 133, 1]));
+  simboloMovil.setSize(26);
+
+  //Símbolo para la ruta
+  var simboloRuta = new SimpleLineSymbol().setColor(new Color([0,0,255,0.5])).setWidth(4);
+
+//*******************************************MAPA    SEARCH ***************************************************************************** */
+  //Creo el mapa
   map = new Map("map", {
   fadeOnZoom: true,
-    center: [-95,39], // longitude, latitude
+    center: [-90,37], 
      zoom:4, 
     minZoom:4,
     smartNavigation:false	
    });
-   var tiled = new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer");
-  map.addLayer(tiled);
 
+  //Le agrego la base
+  var tiled = new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer");
+  map.addLayer(tiled);
+  //creo la busqueda
    search = new Search({
    map: map
    }, "search");
    search.startup();
-   search.on ("search-results", searchHandler);
-   // Símbolo para los puntos
-   var simboloPunto = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
-   simboloPunto.setColor(new Color([230, 0, 0, 1]));
-   simboloPunto.setSize(12);
-  
-  // Símbolo para el móvil
-  var simboloMovil = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_SQUARE);
-  //simboloMovil.setPath("M16,3.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.143,7.5,18.121,7.5,18.121S23.5,15.143,23.5,11C23.5,6.858,20.143,3.5,16,3.5z M16,14.584c-1.979,0-3.584-1.604-3.584-3.584S14.021,7.416,16,7.416S19.584,9.021,19.584,11S17.979,14.584,16,14.584z");
-  simboloMovil.setOffset(0, 15);
-  simboloMovil.setColor(new Color([133, 133, 133, 1]));
-  simboloMovil.setSize(22);
 
-   //Símbolo para la ruta
-  var routeSymbol = new SimpleLineSymbol().setColor(new Color([0,0,255,0.5])).setWidth(4);
+  //seteo el handler busqueda
+  search.on ("search-results", searchHandler);
+/*************************************************Manejo puntos********************************************************************************************* */
+  // Guardar Puntos de la busqueda
+  var cantElementos = 0;
+  function searchHandler(evt){
+    if (evt!=null){
+    cantElementos = puntos.length;
+    var pto = evt.results[0][0];
+    var ptoNuevo = new Object();
+    ptoNuevo.name = pto.name;
+    ptoNuevo.geometry = pto.feature.geometry;
+    ptoNuevo.symbol = simboloPunto;
 
-  // Capa donde se traen los puntos del servicio
-  var puntosServicioLayer = new GraphicsLayer({opacity:0.9});
+    var existe = false;
+    var i = 0;
+    while ((i<puntos.length)&&(!existe)){
+      if (ptoNuevo.name == puntos[i].name){
+        existe = true;
+      }
+      i++;
+    }
 
-//Cargar puntos del servidor
-var pointsFL = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0", {
-  mode: FeatureLayer.MODE_SNAPSHOT,
-  outFields: ["*"]
-});
-pointsFL.setSelectionSymbol(simboloPunto);
+    if (!existe){
+      puntos.push(ptoNuevo);
 
+      // Habilito botones si hay dos puntos o mas.
+      if (puntos.length>1){
+        $(dom.byId("rutaBtn")).prop('disabled', false);
+      }else if (puntos.length<=1){
+          $(dom.byId("rutaBtn")).prop('disabled', true);
+      }
+      if (puntos.length>0){
+        $(dom.byId("listMsj")).prop('hidden', true);
+      }else if (puntos.length==0){
+        $(dom.byId("listMsj")).prop('hidden', false);
+      }
 
-  //Cargar servicio de ruteo
-  routeTask = new RouteTask("https://utility.arcgis.com/usrsvcs/appservices/sAPOQxE99RKO83Fm/rest/services/World/Route/NAServer/Route_World/solve");
-  routeParams = new RouteParameters();
-  routeParams.stops = new FeatureSet();
-  routeParams.outSpatialReference = {"wkid":102100};
+      $(dom.byId("guardarPtosBtn")).prop('disabled', false);
+      $(dom.byId("borrarPtosBtn")).prop('disabled', false);
 
-routeTask.on("solve-complete", dibujarRuta);    
-
- // Graphic layer
- var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
- var symbol = new SimpleFillSymbol();
- 
- on(dom.byId("rutaBtn"), "click", calcularRuta);
- function calcularRuta(){
-  routeTask.solve(routeParams);
-}
-///////////////////////////////////////////////////////////////////////////////////////
- // Botón borrar rutas: Limpia las rutas dibujadas del mapa y de la lista
- on(dom.byId("borrarRutaBtn"), "click", borrarRutas);
-function borrarRutas() {
-  for (var i=routes.length-1; i>=0; i--) {
-    map.graphics.remove(routes.splice(i, 1)[0]);
-  }
-  routes = [];
-  routeGraphicLayer.clear();
-  if (rutaServicioLayer !== undefined) {
-    rutaServicioLayer.clear();
-  }
-  $('#borrarRutaBtn').prop('disabled', true);
-}
-
-// Botón borrar puntos: Limpia los puntos dibujados del mapa, como stop y de la lista
-on(dom.byId("borrarPtosBtn"), "click", borrarPuntos);
-function borrarPuntos() {
-  for (var i=routeParams.stops.features.length-1; i>=0; i--) {
-      map.graphics.remove(routeParams.stops.features.splice(i, 1)[0]);
-  }
-  puntos= [];
-  $('#listaPtos').empty();
-  $(dom.byId("guardarPtosBtn")).prop('disabled', true);
-  $(dom.byId("borrarPtosBtn")).prop('disabled', true);
-  $(dom.byId("listMsj")).prop('hidden', false);
-  $(dom.byId("rutaBtn")).prop('disabled', true);
-
-  puntosServicioLayer.clear();
-}
-
-// Dibuja la ruta calculada
-function dibujarRuta(evt) {
-  borrarRutas();
-  array.forEach(evt.result.routeResults, function(routeResult, i) {
-    routes.push(
-      map.graphics.add(
-        routeResult.route.setSymbol(routeSymbol)
+      // Agregar el stop a la ruta a calcular
+      routeParams.stops.features.push(
+        // Dibujo el punto en el mapa
+        map.graphics.add(
+          new Graphic(ptoNuevo.geometry, ptoNuevo.symbol)
         )
-      );
-    routeGraphicLayer.add(routeResult.route.setSymbol(routeSymbol));
-    map.centerAndZoom([-95,39],4);
-  });
-
-// Agrego la capa de la ruta
-map.addLayer(routeGraphicLayer);
-
-// Deshabilito botones
-$(dom.byId("startBtn")).prop('disabled', false);
-$(dom.byId("borrarRutaBtn")).prop('disabled', false);
-$(dom.byId("guardarRutaBtn")).prop('disabled', false);
-}
-
-// Guardar Puntos en el servicio
-var cantElemList = 0;
-function searchHandler(evt){
-  if (evt!=null){
-  cantElemList = puntos.length;
-  var pto = evt.results[0][0];
-  var puntoNuevo = new Object();
-  puntoNuevo.name = pto.name;
-  puntoNuevo.geometry = pto.feature.geometry;
-  puntoNuevo.symbol = simboloPunto;
-
-  var existe = false;
-  var i = 0;
-  while ((i<puntos.length)&&(!existe)){
-    if (puntoNuevo.name == puntos[i].name){
-      existe = true;
-    }
-    i++;
-  }
-
-  if (!existe){
-    puntos.push(puntoNuevo);
-
-    // Oculta cartel de la lista
-    if (puntos.length>1){
-      $(dom.byId("rutaBtn")).prop('disabled', false);
-    }else if (puntos.length<=1){
-        $(dom.byId("rutaBtn")).prop('disabled', true);
-    }
-    if (puntos.length>0){
-      $(dom.byId("listMsj")).prop('hidden', true);
-    }else if (puntos.length==0){
-      $(dom.byId("listMsj")).prop('hidden', false);
-    }
-
-    $(dom.byId("guardarPtosBtn")).prop('disabled', false);
-    $(dom.byId("borrarPtosBtn")).prop('disabled', false);
-
-    // Agregar un stop a la ruta a calcular
-    routeParams.stops.features.push(
-      // Dibuja punto en el mapa
-      map.graphics.add(
-        new Graphic(puntoNuevo.geometry, puntoNuevo.symbol)
       )
-    )
-    actualizarPuntos();
+      actualizarPuntos();
+    }
   }
-}
-}
-/***************************************************************************************************************************************/
- // Botón Guardar Puntos: Guarda los puntos ingresados por el usuario en el servidor
- on(dom.byId("guardarPtosBtn"), "click", guardarPuntos);
+  }
+
+  
+// Botón Guardar Puntos: Guarda los puntos ingresados por el usuario en el servidor
+on(dom.byId("guardarPtosBtn"), "click", guardarPuntos);
 function guardarPuntos(){
-  puntos.forEach(function(puntoNuevo) {
+  puntos.forEach(function(ptoNuevo) {
       var attributes =  {
       "event_type": '13',
-      "description": puntoNuevo.name
+      "description": ptoNuevo.name
       }
       var puntoSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
       puntoSymbol.setColor(new Color("#DF3A01"));
       puntoSymbol.setSize(15);
-      var newGraphic = new Graphic(puntoNuevo.geometry, puntoSymbol, attributes);
-      pointsFL.applyEdits([newGraphic], null, null);
+      var newGraphic = new Graphic(ptoNuevo.geometry, puntoSymbol, attributes);
+      pointsFeatureLayer.applyEdits([newGraphic], null, null);
     });
 }
 
@@ -240,10 +168,9 @@ on(dom.byId("cargarPtosBtn"), "click", cargarPuntos);
 function cargarPuntos() {
   //Filtrar capa de puntos.
   var query = new Query();
-  // query.where = "description = 'grupo04_puntos'";
   query.where = "event_type = '13'";
-  pointsFL.selectFeatures(query);
-  pointsFL.on("selection-complete", cargoPuntosServicio)
+  pointsFeatureLayer.selectFeatures(query);
+  pointsFeatureLayer.on("selection-complete", cargoPuntosServicio)
 
   // Se dibujan los puntos obtenidos en la query del servicio
   function cargoPuntosServicio(response){
@@ -254,16 +181,16 @@ function cargarPuntos() {
       for (var i = 0; i < features.length; i++) {
 
         // Creo el punto cargado
-        var puntoNuevo = new Object();
-        puntoNuevo.name = features[i].attributes.description;
-        puntoNuevo.geometry = features[i].geometry;
-        puntoNuevo.symbol = features[i].symbol;
+        var ptoNuevo = new Object();
+        ptoNuevo.name = features[i].attributes.description;
+        ptoNuevo.geometry = features[i].geometry;
+        ptoNuevo.symbol = features[i].symbol;
 
         // Miramos si existia
         var existe = false;
         var j = 0;
         while ((j<puntos.length)&&(!existe)){
-          if (puntoNuevo.name == puntos[j].name){
+          if (ptoNuevo.name == puntos[j].name){
             existe = true;
           }
           j++;
@@ -271,24 +198,24 @@ function cargarPuntos() {
 
         // Sino existe lo guardo y lo muestro en el mapa
         if (!existe){
-          puntos.push(puntoNuevo);
+          puntos.push(ptoNuevo);
 
           // Agregar un stop a la ruta a calcular
           routeParams.stops.features.push(
             //dibuja punto en el mapa
             map.graphics.add(
               new Graphic(
-                puntoNuevo.geometry,
-                puntoNuevo.symbol
+                ptoNuevo.geometry,
+                ptoNuevo.symbol
               )
             )
           )
           // Agrego al mapa
-          puntosServicioLayer.add(new Graphic(puntoNuevo.geometry, puntoNuevo.symbol));
+          pointServiceLayer.add(new Graphic(ptoNuevo.geometry, ptoNuevo.symbol));
         }
       }
 
-      map.addLayer(puntosServicioLayer);
+      map.addLayer(pointServiceLayer);
 
       actualizarPuntos();
 
@@ -310,6 +237,99 @@ function cargarPuntos() {
     }
   }
 }
+  // Botón borrar puntos 
+  on(dom.byId("borrarPtosBtn"), "click", borrarPuntos);
+
+  // Funcion borra los puntos dibujados del mapa, como stop y de la lista
+  function borrarPuntos() {
+    for (var i=routeParams.stops.features.length-1; i>=0; i--) {
+        map.graphics.remove(routeParams.stops.features.splice(i, 1)[0]);
+    }
+    puntos= [];
+    $('#listaPtos').empty();
+    $(dom.byId("guardarPtosBtn")).prop('disabled', true);
+    $(dom.byId("borrarPtosBtn")).prop('disabled', true);
+    $(dom.byId("listMsj")).prop('hidden', false);
+    $(dom.byId("rutaBtn")).prop('disabled', true);
+
+    pointServiceLayer.clear();
+  }
+
+  /***************************************************************************Manejo Rutas*************************************************************************************** */
+  //Creo el ruteo
+  routeTask = new RouteTask("https://utility.arcgis.com/usrsvcs/appservices/sAPOQxE99RKO83Fm/rest/services/World/Route/NAServer/Route_World/solve");
+  routeParams = new RouteParameters();
+  routeParams.stops = new FeatureSet();
+  routeParams.outSpatialReference = {"wkid":102100};
+
+  // Botón para calcular ruta
+  on(dom.byId("rutaBtn"), "click", calcularRuta);
+  function calcularRuta(){
+  routeTask.solve(routeParams);
+  }   
+
+    // Dibuja la ruta calculada
+  function dibujarRuta(evt) {
+    borrarRutas();
+    array.forEach(evt.result.routeResults, function(routeResult, i) {
+      rutas.push(
+        map.graphics.add(
+          routeResult.route.setSymbol(simboloRuta)
+          )
+        );
+      routeGraphicLayer.add(routeResult.route.setSymbol(simboloRuta));
+      map.centerAndZoom([-95,39],4);
+    });
+
+  // Agrego la capa de la ruta
+  map.addLayer(routeGraphicLayer);
+
+  // Deshabilito botones
+  $(dom.byId("startBtn")).prop('disabled', false);
+  $(dom.byId("borrarRutaBtn")).prop('disabled', false);
+  $(dom.byId("guardarRutaBtn")).prop('disabled', false);
+  }
+  //seteo el handler ruteo
+  routeTask.on("solve-complete", dibujarRuta);
+
+   
+  // Botón para borrar rutas 
+  on(dom.byId("borrarRutaBtn"), "click", borrarRutas);
+
+  //Funcion para borrar las rutas dibujadas del mapa y de la lista
+  function borrarRutas() {
+    for (var i=rutas.length-1; i>=0; i--) {
+      map.graphics.remove(rutas.splice(i, 1)[0]);
+    }
+    rutas = [];
+    routeGraphicLayer.clear();
+    if (rutaServicioLayer !== undefined) {
+      rutaServicioLayer.clear();
+    }
+    $('#borrarRutaBtn').prop('disabled', true);
+    $("#startBtn").prop('disabled', true);
+  }
+      
+  
+  
+
+/***********************************************************************************************Capas*********************************************** */
+  // Capa donde se traen los puntos del servicio
+  var  pointServiceLayer = new GraphicsLayer({opacity:0.9});
+
+  //Cargar puntos del servidor
+  var pointsFeatureLayer = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0", {
+    mode: FeatureLayer.MODE_SNAPSHOT,
+    outFields: ["*"]
+  });
+  pointsFeatureLayer.setSelectionSymbol(simboloPunto);
+    
+ // Graphic layer
+ var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
+ 
+
+
+ 
 /**************************************************************************************************************************************************************************/
 var geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 // Capa donde se dibuja el móvil
@@ -343,14 +363,14 @@ function moverMovil(){
 
   if (!terminarSIM){
       // Si llegué al final o me pase de la cantidad de puntos entonces llegue al final
-      if (iter >= routes[0].geometry.paths[0].length - 1){
-        iter = routes[0].geometry.paths[0].length - 1;
+      if (iter >= rutas[0].geometry.paths[0].length - 1){
+        iter = rutas[0].geometry.paths[0].length - 1;
         terminarSIM = true;
       }
 
       // Punto siguiente del móvil.
-      xsig = routes[0].geometry.paths[0][iter][0];
-      ysig = routes[0].geometry.paths[0][iter][1];
+      xsig = rutas[0].geometry.paths[0][iter][0];
+      ysig = rutas[0].geometry.paths[0][iter][1];
       var ptoSig = new Point(xsig,ysig,map.spatialReference)
 
       if($("#myonoffswitch").is(':checked')) {
@@ -366,7 +386,7 @@ function moverMovil(){
       movilLayer.add(new Graphic(ptoSig, simboloMovil));
 
       // El salto es proporcional a la cantidad de puntos que tenga la ruta
-      salto = parseInt(routes[0].geometry.paths[0].length/60); //Saltos
+      salto = parseInt(rutas[0].geometry.paths[0].length/60); //Saltos
       iter = iter + salto;
 
       // Dibujar buffer en el móvil
@@ -540,13 +560,13 @@ var trailsFL = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/s
 // Guardar ruta
 on(dom.byId("guardarRutaBtn"), "click", guardarRuta);
 function guardarRuta(){
-  var nombre_ruta = "grupo04_rutas_"+$("#selectedRoute	 option:selected")[0].value;
+  var nombre_ruta = "grupo2_rutas_"+$("#selectedRoute	 option:selected")[0].value;
   // Guardar la ruta seleccionada.
   var attributes =  {
     "trailtype":4,
     "notes": nombre_ruta
   }
-  var newGraphic = new Graphic(routes[0].geometry,routeSymbol,attributes);
+  var newGraphic = new Graphic(rutas[0].geometry,simboloRuta,attributes);
   // Aplico cambios en el servicio
   trailsFL.applyEdits([newGraphic], null, null);
 
@@ -559,7 +579,7 @@ function cargarRuta(){
 
   //Filtrar rutas del servidor
   var query = new Query();
-  var note = "grupo04_rutas_"+rutaSeleccionada
+  var note = "grupo2_rutas_"+rutaSeleccionada
   query.where = "notes = '"+ note +"'";
   query.outSpatialReference = {"wkid":102100};
   trailsFL.selectFeatures(query);
@@ -587,12 +607,12 @@ function cargarRuta(){
 
       // Se carga la nueva ruta.
       array.forEach(response.features, function(featureResult, i) {
-        routes.push(
+        rutas.push(
           map.graphics.add(
-            featureResult.setSymbol(routeSymbol)
+            featureResult.setSymbol(simboloRuta)
             )
           );
-        rutaServicioLayer.add(featureResult.setSymbol(routeSymbol));
+        rutaServicioLayer.add(featureResult.setSymbol(simboloRuta));
       });
       map.addLayer(rutaServicioLayer);
 
@@ -609,7 +629,7 @@ var printer = new Print({
     layout: "A4 Portrait",
     layoutOptions: {
       titleText: "Laboratorio 2",
-      authorText: "Grupo 4",
+      authorText: "Grupo 2",
       copyrightText: "SIG",
     },
     exportOptions: {
@@ -620,5 +640,6 @@ var printer = new Print({
   }]
 }, dom.byId("printButton"));
 printer.startup();
-
 });
+
+
