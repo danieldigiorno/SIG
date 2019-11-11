@@ -39,7 +39,7 @@ require([
     FeatureSet ,Color,Geometry,GeometryEngine,Point,Graphic,QueryTask, Query,Print,array,dom,on) {
   
   
-   
+
   /*
   $.ajax({
     'url': "https://www.arcgis.com/sharing/rest/oauth2/token/",
