@@ -132,7 +132,7 @@ require([
         $(dom.byId("listMsj")).prop('hidden', false);
       }
 
-      $(dom.byId("guardarPtosBtn")).prop('disabled', false);
+      $(dom.byId("subirPtosBtn")).prop('disabled', false);
       $(dom.byId("borrarPtosBtn")).prop('disabled', false);
 
       // Agregar el stop a la ruta a calcular
@@ -165,6 +165,9 @@ require([
         pointsFeatureLayer.applyEdits([newGraphic], null, null);
       });
   }
+
+   // Capa donde se ponen los puntos descargados del servicio
+   var  pointServiceLayer = new GraphicsLayer({opacity:0.9});
 
   //Boton para descargar puntos del servidor
   on(dom.byId("descargarPtosBtn"), "click", descargarPuntos);
@@ -237,7 +240,7 @@ require([
           $(dom.byId("rutaBtn")).prop('disabled', true);
         }
 
-        $(dom.byId("guardarPtosBtn")).prop('disabled', false);
+        $(dom.byId("subirPtosBtn")).prop('disabled', false);
         $(dom.byId("borrarPtosBtn")).prop('disabled', false);
       }
     }
@@ -252,7 +255,7 @@ require([
     }
     puntos= [];
     $('#listaPtos').empty();
-    $(dom.byId("guardarPtosBtn")).prop('disabled', true);
+    $(dom.byId("subirPtosBtn")).prop('disabled', true);
     $(dom.byId("borrarPtosBtn")).prop('disabled', true);
     $(dom.byId("listMsj")).prop('hidden', false);
     $(dom.byId("rutaBtn")).prop('disabled', true);
@@ -266,6 +269,10 @@ require([
   routeParams = new RouteParameters();
   routeParams.stops = new FeatureSet();
   routeParams.outSpatialReference = {"wkid":102100};
+
+      
+ //  layer Ruta
+ var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
 
   // Botón para calcular ruta
   on(dom.byId("rutaBtn"), "click", calcularRuta);
@@ -319,8 +326,7 @@ require([
   
 
 /***********************************************************************************************Capas*********************************************** */
-  // Capa donde se traen los puntos del servicio
-  var  pointServiceLayer = new GraphicsLayer({opacity:0.9});
+ 
 
   //Cargar puntos del servidor
   var pointsFeatureLayer = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0", {
@@ -328,9 +334,7 @@ require([
     outFields: ["*"]
   });
   pointsFeatureLayer.setSelectionSymbol(simboloPunto);
-    
- // Graphic layer
- var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
+
  
 
 

@@ -31,7 +31,7 @@ $(document).ready(function() {
   $('#rutaBtn').prop('disabled', true);
   $('#borrarRutaBtn').prop('disabled', true);
   $('#guardarRutaBtn').prop('disabled', true);
-  $('#guardarPtosBtn').prop('disabled', true);
+  $('#subirPtosBtn').prop('disabled', true);
   $('#borrarPtosBtn').prop('disabled', true);
   $('#startBtn').prop('disabled', true);
   $('#stopBtn').prop('disabled', true);
@@ -86,14 +86,12 @@ function eliminarPto(id){
   
   // Saca el punto de los stops
   map.graphics.remove(routeParams.stops.features.splice(id, 1)[0]);
-  
   actualizarPuntos();
-  
   // Cartel de No hay puntos
   if (puntos.length==0){
     $("#listMsj").prop('hidden', false);
-    $("guardarPtosBtn").prop('disabled', true);
-    $("borrarPtosBtn").prop('disabled', true);
+    $("#subirPtosBtn").prop('disabled', true);
+    $("#borrarPtosBtn").prop('disabled', true);
   }else{
     $("#listMsj").prop('hidden', true);
   }
