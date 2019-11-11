@@ -76,7 +76,7 @@ require([
    search.startup();
    search.on ("search-results", searchHandler);
    // Símbolo para los puntos
-   var simboloPunto = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CROSS);
+   var simboloPunto = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
    simboloPunto.setColor(new Color([230, 0, 0, 1]));
    simboloPunto.setSize(12);
   
