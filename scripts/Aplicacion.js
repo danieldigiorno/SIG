@@ -148,95 +148,100 @@ require([
   }
 
   
-// Botón Guardar Puntos: Guarda los puntos ingresados por el usuario en el servidor
-on(dom.byId("guardarPtosBtn"), "click", guardarPuntos);
-function guardarPuntos(){
-  puntos.forEach(function(ptoNuevo) {
-      var attributes =  {
-      "event_type": '13',
-      "description": ptoNuevo.name
-      }
-      var puntoSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
-      puntoSymbol.setColor(new Color("#DF3A01"));
-      puntoSymbol.setSize(15);
-      var newGraphic = new Graphic(ptoNuevo.geometry, puntoSymbol, attributes);
-      pointsFeatureLayer.applyEdits([newGraphic], null, null);
-    });
-}
+  // Botón Guardar Puntos 
+  on(dom.byId("subirPtosBtn"), "click", subirPuntos);
 
-on(dom.byId("cargarPtosBtn"), "click", cargarPuntos);
-function cargarPuntos() {
-  //Filtrar capa de puntos.
-  var query = new Query();
-  query.where = "event_type = '13'";
-  pointsFeatureLayer.selectFeatures(query);
-  pointsFeatureLayer.on("selection-complete", cargoPuntosServicio)
-
-  // Se dibujan los puntos obtenidos en la query del servicio
-  function cargoPuntosServicio(response){
-    if (response.features.length == 0){
-      alert("No hay puntos guardados");
-    }else{
-      var features = response.features;
-      for (var i = 0; i < features.length; i++) {
-
-        // Creo el punto cargado
-        var ptoNuevo = new Object();
-        ptoNuevo.name = features[i].attributes.description;
-        ptoNuevo.geometry = features[i].geometry;
-        ptoNuevo.symbol = features[i].symbol;
-
-        // Miramos si existia
-        var existe = false;
-        var j = 0;
-        while ((j<puntos.length)&&(!existe)){
-          if (ptoNuevo.name == puntos[j].name){
-            existe = true;
-          }
-          j++;
+  //funcion para guardar los puntos ingresados por el usuario en el servidor
+  function subirPuntos(){
+    puntos.forEach(function(ptoNuevo) {
+        var attributes =  {
+        "event_type": '13',
+        "description": ptoNuevo.name
         }
+        var puntoSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
+        puntoSymbol.setColor(new Color([255, 85, 0, 0.64]));
+        puntoSymbol.setSize(15);
+        var newGraphic = new Graphic(ptoNuevo.geometry, puntoSymbol, attributes);
+        pointsFeatureLayer.applyEdits([newGraphic], null, null);
+      });
+  }
 
-        // Sino existe lo guardo y lo muestro en el mapa
-        if (!existe){
-          puntos.push(ptoNuevo);
+  //Boton para descargar puntos del servidor
+  on(dom.byId("descargarPtosBtn"), "click", descargarPuntos);
 
-          // Agregar un stop a la ruta a calcular
-          routeParams.stops.features.push(
-            //dibuja punto en el mapa
-            map.graphics.add(
-              new Graphic(
-                ptoNuevo.geometry,
-                ptoNuevo.symbol
+  //Funcion para descargar puntos del servidor
+  function descargarPuntos() {
+    //Filtrar capa de puntos.
+    var query = new Query();
+    query.where = "event_type = '13'";
+    pointsFeatureLayer.selectFeatures(query);
+    pointsFeatureLayer.on("selection-complete", cargoPuntosServicio)
+
+    // Se dibujan los puntos obtenidos en la query del servicio
+    function cargoPuntosServicio(response){
+      if (response.features.length == 0){
+        alert("No hay puntos guardados");
+      }else{
+        var features = response.features;
+        for (var i = 0; i < features.length; i++) {
+
+          // Creo el punto cargado
+          var ptoNuevo = new Object();
+          ptoNuevo.name = features[i].attributes.description;
+          ptoNuevo.geometry = features[i].geometry;
+          ptoNuevo.symbol = features[i].symbol;
+
+          // Miramos si existia
+          var existe = false;
+          var j = 0;
+          while ((j<puntos.length)&&(!existe)){
+            if (ptoNuevo.name == puntos[j].name){
+              existe = true;
+            }
+            j++;
+          }
+
+          // Sino existe lo guardo y lo muestro en el mapa
+          if (!existe){
+            puntos.push(ptoNuevo);
+
+            // Agregar un stop a la ruta a calcular
+            routeParams.stops.features.push(
+              //dibuja punto en el mapa
+              map.graphics.add(
+                new Graphic(
+                  ptoNuevo.geometry,
+                  ptoNuevo.symbol
+                )
               )
             )
-          )
-          // Agrego al mapa
-          pointServiceLayer.add(new Graphic(ptoNuevo.geometry, ptoNuevo.symbol));
+            // Agrego al mapa
+            pointServiceLayer.add(new Graphic(ptoNuevo.geometry, ptoNuevo.symbol));
+          }
         }
-      }
 
-      map.addLayer(pointServiceLayer);
+        map.addLayer(pointServiceLayer);
 
-      actualizarPuntos();
+        actualizarPuntos();
 
-      // Oculta cartel de la lista
-      if (puntos.length>1){
-        $(dom.byId("rutaBtn")).prop('disabled', false);
-      }else if (puntos.length<=1){
+        // Oculta cartel de la lista
+        if (puntos.length>1){
+          $(dom.byId("rutaBtn")).prop('disabled', false);
+        }else if (puntos.length<=1){
+            $(dom.byId("rutaBtn")).prop('disabled', true);
+        }
+        if (puntos.length>0){
+          $(dom.byId("listMsj")).prop('hidden', true);
+        }else if (puntos.length==0){
+          $(dom.byId("listMsj")).prop('hidden', false);
           $(dom.byId("rutaBtn")).prop('disabled', true);
-      }
-      if (puntos.length>0){
-        $(dom.byId("listMsj")).prop('hidden', true);
-      }else if (puntos.length==0){
-        $(dom.byId("listMsj")).prop('hidden', false);
-        $(dom.byId("rutaBtn")).prop('disabled', true);
-      }
+        }
 
-      $(dom.byId("guardarPtosBtn")).prop('disabled', false);
-      $(dom.byId("borrarPtosBtn")).prop('disabled', false);
+        $(dom.byId("guardarPtosBtn")).prop('disabled', false);
+        $(dom.byId("borrarPtosBtn")).prop('disabled', false);
+      }
     }
   }
-}
   // Botón borrar puntos 
   on(dom.byId("borrarPtosBtn"), "click", borrarPuntos);
 
