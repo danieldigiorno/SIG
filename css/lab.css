@@ -36,7 +36,7 @@ html, body, #map {
 .listaPuntos{
     display: block;
     position: absolute;
-		min-width: 100%;
+	min-width: 100%;
     z-index: 2;
     top: 30px;
     left: 6%;
@@ -67,9 +67,9 @@ html, body, #map {
 	color: #fff;
 }
 
-.top-nav-collapse {
+/* .top-nav-collapse {
     background: #13945b;
-}
+} */
 
 .list-items {
 	margin-left: 2%;

@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css?family=Baloo");
+.navbar-box {
+  padding: 0;
+  background-color: #f0dac0;
+  border-bottom: #5c5f30 solid 6px;
+  color: #5c5f30;
+  justify-content: space-between;
+}
+
+.navbar-box .navbar-content {
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 40px;
+}
+
+.navbar-box .navbar-content .navbar-title {
+  font-family: "Baloo";
+  font-weight: 200;
+  font-size: 30px;
+  color: #5c5f30;
+  text-align: left;
+  justify-content: space-between;
+  margin: 0px 20px;
+  margin-top: 15px;
+}
+
+.navbar-box .navbar-content .help {
+  font-size: 14px;
+  align-content: right;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-right: 30px;
+  margin-bottom: 10px;
+  border-width: 0px;
+
+  background: url(../img/help.png) no-repeat top center;
+  width: 50px;
+  height: 50px;
+}
+
+p,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  color: #000;
+  background-color: #fff;
+}
+
+h1 {
+  font-family: "Baloo";
+  font-size: 24px;
+  color: #000;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 9999; /* Sit on top */
+  flex-direction: column;
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+}
+
+/* Modal Title */
+.modal-title {
+  border-bottom: #5c5f30 solid 5px;
+  color: #5c5f30;
+  margin-bottom: 20px;
+}
+
+/* The Close Button */
+.close {
+  color: #000;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  align-self: center;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}

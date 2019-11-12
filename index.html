@@ -5,20 +5,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
-<meta name="author" content="SIG-Grupo8-2017">
+<meta name="author" content="SIG2019-Grupo2">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>SIG 2016</title>
+<title>SIG 2019 - Grupo 2</title>
 
 <!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link href="css/lab.css" rel="stylesheet">
-<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"	type="text/css">
-<link href="css/animate.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet">
-<link href="color/default.css" rel="stylesheet">
+<link href="css/mystyle.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://js.arcgis.com/3.30/esri/css/esri.css">
-<link rel='stylesheet'	href='https://fonts.googleapis.com/css?family=Special+Elite' type='text/css'>
 <link rel="stylesheet"	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
 
@@ -29,65 +27,46 @@
 <script src="scripts/Aplicacion.js"></script>
 </head>
 
-<body id="page-top" data-spy="scroll" data-target=".navbar-custom">
-	<div id="preloader">
-		<div id="load"></div>
-	</div>
-
-	<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header page-scroll">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target=".navbar-main-collapse">
-					<i class="fa fa-bars"></i>
-				</button>
-				<a class="navbar-brand" href="index.html">
-					<h1>SIG 2016</h1>
-				</a>
+<body>
+	<nav class="navbar-box">
+		<div class="navbar-content">
+			<div class="navbar-title">SIG 2019 - GRUPO 2</div>
+			<button id="help" class="help"></button>
+			<!-- The Modal -->
+			<div id="myModal" class="modal">
+				<!-- Modal content -->
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<h1 class="modal-title">INSTRUCCIONES</h1>
+					<p>1. Primer paso</p>
+					<p>2. Segundo paso</p>
+					<p>3. Tercer paso</p>
+					<p>4. Cuarto paso</p>
+					<p>5. Quinto paso</p>
+					<p>6. Sexto paso</p>
+				</div>
 			</div>
 		</div>
-		<!-- /.container -->
 	</nav>
 
-	<!-- Section: intro -->
-	<section id="intro" class="intro">
-		<div class="slogan">
-			<h2> LABORATORIO 2 </h2>
-			<h3> GRUPO 4 </h3>
-			<h4> Carina Soca - Rodrigo Eizmendi </h4>
-		</div>
-		<div class="page-scroll">
-	</section>
-	<!-- /Section: intro -->
-
 	<section id="about" class="home-section text-center">
-		<div class="heading-about">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-8 col-lg-offset-2">
-						<div class="wow bounceInDown" data-wow-delay="0.4s">
-							<div class="section-heading">
-								<h2 style="color:#fff;">GUÍA RÁPIDA</h2>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 		<div class="container">
-			<div class="row">
-				<div class="col-lg-2 col-lg-offset-5">
-					<hr class="marginbot-50">
+			<!-- <div class="row">
+				<div>
+					<h1 style="margin-top: 100px;">LABORATORIO 2</h1>
+					<h2>GRUPO 2: DANIEL ACUÑA, EVELYN KREMER</h1>
 				</div>
-			</div>
-			<div class="row instruc">
+			</div> -->
+			<!-- <div class="row instruc">
 					<div class="col-md-2">1. Agregue algunos puntos.</div>
 					<div class="col-md-2">2. Revise el orden.</div>
 					<div class="col-md-2">3. Calcule la ruta.</div>
 					<div class="col-md-2">4. Comience la simulación.</div>
 					<div class="col-md-2">5. Si lo desea modifique los parámetros.</div>
 					<div class="col-md-2">6. Detenga la simulación</div>
-			</div>
+			</div> -->
+			
 		</div>
 	</section>
 	<!-- /Section: about -->
@@ -159,9 +138,9 @@
 
 							</div>
 						</div>
-
+						
+						<div style="padding: 0px 50px;" id="map"></div>
 						<div id="search"></div>
-						<div id="map"></div>
 						<div class="row" style="margin-bottom:1%; margin-top: 1%;display: flex;">
 							<div class="col-md-3" style="padding:2px; text-align:center; width:290px">
 								<!-- Seleccionar radio para el buffer -->
@@ -243,8 +222,8 @@
 	<!-- Core JavaScript Files -->
 	<script src="scripts/jquery.min.js"></script>
 	<!--<script src="js/bootstrap.min.js"></script>-->
-	<script src="scripts/jquery.easing.min.js"></script>
-	<script src="scripts/jquery.scrollTo.js"></script>
+	<!-- <script src="scripts/jquery.easing.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script> -->
 	<script src="scripts/wow.min.js"></script>
 	<!-- Custom Theme JavaScript -->
 	<script src="scripts/custom.js"></script>
