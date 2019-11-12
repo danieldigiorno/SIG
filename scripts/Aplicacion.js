@@ -1,5 +1,12 @@
 
-var map, search,routeTask, routeParams, rutas = [], puntos = [];
+var map, 
+search,
+routeTask, 
+routeParams,
+pointServiceLayer, 
+rutas = [], 
+puntos = [];
+
 
 require([
   "esri/map",
@@ -167,7 +174,7 @@ require([
   }
 
    // Capa donde se ponen los puntos descargados del servicio
-   var  pointServiceLayer = new GraphicsLayer({opacity:0.9});
+     pointServiceLayer = new GraphicsLayer({opacity:0.9});
 
   //Boton para descargar puntos del servidor
   on(dom.byId("descargarPtosBtn"), "click", descargarPuntos);

@@ -87,6 +87,7 @@ function eliminarPto(id){
   // Saca el punto de los stops
   map.graphics.remove(routeParams.stops.features.splice(id, 1)[0]);
   actualizarPuntos();
+  pointServiceLayer.clear();
   // Cartel de No hay puntos
   if (puntos.length==0){
     $("#listMsj").prop('hidden', false);
