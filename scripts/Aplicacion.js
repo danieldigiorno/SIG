@@ -103,6 +103,7 @@ require([
 
   //seteo el handler busqueda
   search.on ("search-results", searchHandler);
+
 /*************************************************Manejo puntos********************************************************************************************* */
   // Guardar Puntos de la busqueda
   var cantElementos = 0;
@@ -114,7 +115,7 @@ require([
     ptoNuevo.name = pto.name;
     ptoNuevo.geometry = pto.feature.geometry;
     ptoNuevo.symbol = simboloPunto;
-
+    //Busco si existe
     var existe = false;
     var i = 0;
     while ((i<puntos.length)&&(!existe)){
@@ -154,8 +155,15 @@ require([
   }
   }
 
+  //Capa para subir puntos al servidor
+  var pointsFeatureLayer = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0", {
+    mode: FeatureLayer.MODE_SNAPSHOT,
+    outFields: ["*"]
+  });
+  pointsFeatureLayer.setSelectionSymbol(simboloPunto);
+
   
-  // Botón Guardar Puntos 
+  // Botón Subir Puntos 
   on(dom.byId("subirPtosBtn"), "click", subirPuntos);
 
   //funcion para guardar los puntos ingresados por el usuario en el servidor
@@ -171,10 +179,11 @@ require([
         var newGraphic = new Graphic(ptoNuevo.geometry, puntoSymbol, attributes);
         pointsFeatureLayer.applyEdits([newGraphic], null, null);
       });
+      alert("Puntos guardados");
   }
 
-   // Capa donde se ponen los puntos descargados del servicio
-     pointServiceLayer = new GraphicsLayer({opacity:0.9});
+  // Capa donde se ponen los puntos descargados del servicio
+  pointServiceLayer = new GraphicsLayer({opacity:0.9});
 
   //Boton para descargar puntos del servidor
   on(dom.byId("descargarPtosBtn"), "click", descargarPuntos);
@@ -190,18 +199,16 @@ require([
     // Se dibujan los puntos obtenidos en la query del servicio
     function cargoPuntosServicio(response){
       if (response.features.length == 0){
-        alert("No hay puntos guardados");
+        alert("No hay puntos subidos");
       }else{
         var features = response.features;
         for (var i = 0; i < features.length; i++) {
-
-          // Creo el punto cargado
+          // Creo el punto subido
           var ptoNuevo = new Object();
           ptoNuevo.name = features[i].attributes.description;
           ptoNuevo.geometry = features[i].geometry;
           ptoNuevo.symbol = features[i].symbol;
-
-          // Miramos si existia
+          // Ver si existe
           var existe = false;
           var j = 0;
           while ((j<puntos.length)&&(!existe)){
@@ -210,12 +217,9 @@ require([
             }
             j++;
           }
-
-          // Sino existe lo guardo y lo muestro en el mapa
+          // Si no existe lo guardo, lo agrego como stop y lo muestro en el mapa
           if (!existe){
             puntos.push(ptoNuevo);
-
-            // Agregar un stop a la ruta a calcular
             routeParams.stops.features.push(
               //dibuja punto en el mapa
               map.graphics.add(
@@ -225,7 +229,6 @@ require([
                 )
               )
             )
-            // Agrego al mapa
             pointServiceLayer.add(new Graphic(ptoNuevo.geometry, ptoNuevo.symbol));
           }
         }
@@ -271,23 +274,27 @@ require([
   }
 
   /***************************************************************************Manejo Rutas*************************************************************************************** */
-  //Creo el ruteo
+  //Creo el task de ruteo
   routeTask = new RouteTask("https://utility.arcgis.com/usrsvcs/appservices/sAPOQxE99RKO83Fm/rest/services/World/Route/NAServer/Route_World/solve");
   routeParams = new RouteParameters();
   routeParams.stops = new FeatureSet();
   routeParams.outSpatialReference = {"wkid":102100};
 
-      
- //  layer Ruta
- var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
+  //  Capa de Ruta
+  var routeGraphicLayer = new GraphicsLayer({opacity:0.9});
 
   // Botón para calcular ruta
   on(dom.byId("rutaBtn"), "click", calcularRuta);
+
+  //Funcion para calcular ruta
   function calcularRuta(){
   routeTask.solve(routeParams);
-  }   
+  }
 
-    // Dibuja la ruta calculada
+  //seteo el handler ruteo
+  routeTask.on("solve-complete", dibujarRuta);
+
+    // Handler para ibujar la ruta calculada
   function dibujarRuta(evt) {
     borrarRutas();
     array.forEach(evt.result.routeResults, function(routeResult, i) {
@@ -300,7 +307,7 @@ require([
       map.centerAndZoom([-95,39],4);
     });
 
-  // Agrego la capa de la ruta
+  // Agrego la capa de la ruta al mapa
   map.addLayer(routeGraphicLayer);
 
   // Deshabilito botones
@@ -308,10 +315,7 @@ require([
   $(dom.byId("borrarRutaBtn")).prop('disabled', false);
   $(dom.byId("guardarRutaBtn")).prop('disabled', false);
   }
-  //seteo el handler ruteo
-  routeTask.on("solve-complete", dibujarRuta);
 
-   
   // Botón para borrar rutas 
   on(dom.byId("borrarRutaBtn"), "click", borrarRutas);
 
@@ -328,37 +332,90 @@ require([
     $('#borrarRutaBtn').prop('disabled', true);
     $("#startBtn").prop('disabled', true);
   }
-      
-  
-  
 
-/***********************************************************************************************Capas*********************************************** */
- 
+  // Capa para subir rutas al servidor
+var routesFeatureLayer = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Recreation/FeatureServer/1", {
+  mode: FeatureLayer.MODE_SNAPSHOT,
+  outFields: ["*"]});
 
-  //Cargar puntos del servidor
-  var pointsFeatureLayer = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0", {
-    mode: FeatureLayer.MODE_SNAPSHOT,
-    outFields: ["*"]
-  });
-  pointsFeatureLayer.setSelectionSymbol(simboloPunto);
+ //Boton guardar ruta
+on(dom.byId("guardarRutaBtn"), "click", guardarRuta);
 
- 
+//Funcion guardar ruta en el servidor
+function guardarRuta(){
+  var nombreRuta = "grupo2Rutas_"+$("#selectedRoute	 option:selected")[0].value;
+  // Guardar la ruta seleccionada.
+  var atributos =  {
+    "trailtype":4,
+    "notes": nombreRuta
+  }
+  var newGraphic = new Graphic(rutas[0].geometry,simboloRuta,atributos);
 
+  // Subo la ruta en el servicio
+  routesFeatureLayer.applyEdits([newGraphic], null, null);
 
- 
-/**************************************************************************************************************************************************************************/
+}
+// Cargar ruta seleccionada
+on(dom.byId("cargarRutaBtn"), "click", cargarRuta);
+function cargarRuta(){
+  var rutaSeleccionada = $("#selectedRoute option:selected")[0].value;
+
+  //Filtrar rutas del servidor
+  var query = new Query();
+  var note = "grupo2Rutas_"+rutaSeleccionada
+  query.where = "notes = '"+ note +"'";
+  query.outSpatialReference = {"wkid":102100};
+  routesFeatureLayer.selectFeatures(query);
+
+  routesFeatureLayer.on("selection-complete", dibujarRutaGuardadaHandler)
+
+  // Capa donde se ponen los puntos filtrados del servicio
+  rutaServicioLayer = new GraphicsLayer({opacity:0.9});
+
+  //Handler para dibujar la ruta obtenida en la query del servicio
+  function dibujarRutaGuardadaHandler(response){
+    if (response.features.length == 0){
+      alert("No existia una ruta guardada en este lugar");
+    }else{
+      // Si había ruta cargada, se borra.
+      borrarRutas();
+      borrarPuntos();
+      routeGraphicLayer.clear();
+      movilLayer.clear();
+
+      if ((response!=null) && (response.features.length>0)){
+         $(dom.byId("startBtn")).prop('disabled', false);
+         $(dom.byId("borrarRutaBtn")).prop('disabled', false);
+      }
+      // Se carga la nueva ruta.
+      array.forEach(response.features, function(featureResult, i) {
+        rutas.push(
+          map.graphics.add(
+            featureResult.setSymbol(simboloRuta)
+            )
+          );
+        rutaServicioLayer.add(featureResult.setSymbol(simboloRuta));
+      });
+      map.addLayer(rutaServicioLayer);
+
+    }
+  }
+}
+/***********************************************************Simulacion************************************************************************************************/
+//Servicio para consultas vectoriales
 var geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
-// Capa donde se dibuja el móvil
+
+// Capa graphic del móvil
 var movilLayer = new GraphicsLayer();
 
 on(dom.byId("startBtn"), "click", startSimulacion);
+
 function startSimulacion(){
     var cantPtosRta = 10;
     $("#startBtn").prop('disabled', true);
     $('#stopBtn').prop('disabled', false);
     $('#ptosList').prop('hidden',true);
     $('#infoList').prop('hidden',false);
-
     $('.panel div.clickable').click();
 
     iter = 0;
@@ -367,9 +424,9 @@ function startSimulacion(){
     terminarSIM = false;
 }
 
-var radio_buffer;
+var radioBuffer;
 
-var nombre_estado;
+var nombreEstado;
 // Funcion para mover el movil
 var colorBuffer = new dojo.Color([0, 0, 255, 0.15]); 
 function moverMovil(){
@@ -411,13 +468,13 @@ function moverMovil(){
 
       // Tamaño del buffer
       if ($('#p')[0].checked)
-        radio_buffer = 10;
+        radioBuffer = 10;
       else if ($('#m')[0].checked)
-        radio_buffer = 25;
+        radioBuffer = 25;
       else if ($('#g')[0].checked)
-        radio_buffer = 50;
+        radioBuffer = 50;
 
-      params.distances = [radio_buffer];
+      params.distances = [radioBuffer];
       params.unit = 9036;
       params.outSpatialReference = {"wkid":102100};
 
@@ -466,7 +523,7 @@ function moverMovil(){
             movilLayer.add(new Graphic(ptoSig, simboloMovil));
           });
 
-          nombre_estado = evt.featureSet.features[0].attributes.NAME;
+          nombreEstado = evt.featureSet.features[0].attributes.NAME;
         });
 
         // Query Counties overlap buffer
@@ -525,7 +582,7 @@ function moverMovil(){
             tipoRadio = "Grande" ;
 
           $('#infoSimu').empty();
-          $("<b> Estado: </b>"+nombre_estado+ "<br/>"
+          $("<b> Estado: </b>"+nombreEstado+ "<br/>"
             + "<b>Condado : Pob en buffer / Pob Total: </b><br/>"
             + counties
             + "<b>Total población en buffer: </b>" + total_population +" hábitantes <br/>").appendTo( "#infoSimu" );
@@ -568,73 +625,9 @@ function stopSimulacion(){
   $('#infoList').prop('hidden',true);
 }
 
-// FeatureLayer para cargar rutas del servidor
-var trailsFL = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Recreation/FeatureServer/1", {
-  mode: FeatureLayer.MODE_SNAPSHOT,
-  outFields: ["*"]});
 
-// Guardar ruta
-on(dom.byId("guardarRutaBtn"), "click", guardarRuta);
-function guardarRuta(){
-  var nombre_ruta = "grupo2_rutas_"+$("#selectedRoute	 option:selected")[0].value;
-  // Guardar la ruta seleccionada.
-  var attributes =  {
-    "trailtype":4,
-    "notes": nombre_ruta
-  }
-  var newGraphic = new Graphic(rutas[0].geometry,simboloRuta,attributes);
-  // Aplico cambios en el servicio
-  trailsFL.applyEdits([newGraphic], null, null);
 
-}
 
-// Cargar ruta seleccionada
-on(dom.byId("cargarRutaBtn"), "click", cargarRuta);
-function cargarRuta(){
-  var rutaSeleccionada = $("#selectedRoute option:selected")[0].value;
-
-  //Filtrar rutas del servidor
-  var query = new Query();
-  var note = "grupo2_rutas_"+rutaSeleccionada
-  query.where = "notes = '"+ note +"'";
-  query.outSpatialReference = {"wkid":102100};
-  trailsFL.selectFeatures(query);
-
-  trailsFL.on("selection-complete", dibujarRutaCargada)
-
-  // Capa donde se ponen los puntos filtrados del servicio
-  rutaServicioLayer = new GraphicsLayer({opacity:0.9});
-
-  // Se dibuja la ruta obtenida en la query del servicio
-  function dibujarRutaCargada(response){
-    if (response.features.length == 0){
-      alert("La ruta seleccionada no esta disponible");
-    }else{
-      // Si había ruta cargada, se borra.
-      borrarRutas();
-      borrarPuntos();
-      routeGraphicLayer.clear();
-      movilLayer.clear();
-
-      if ((response!=null) && (response.features.length>0)){
-         $(dom.byId("startBtn")).prop('disabled', false);
-         $(dom.byId("borrarRutaBtn")).prop('disabled', false);
-      }
-
-      // Se carga la nueva ruta.
-      array.forEach(response.features, function(featureResult, i) {
-        rutas.push(
-          map.graphics.add(
-            featureResult.setSymbol(simboloRuta)
-            )
-          );
-        rutaServicioLayer.add(featureResult.setSymbol(simboloRuta));
-      });
-      map.addLayer(rutaServicioLayer);
-
-    }
-  }
-}
 // Printerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 var printer = new Print({
   map: map,

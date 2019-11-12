@@ -26,7 +26,7 @@ $(document).on('click', '.panel div.clickable', function (e) {
 });
 
 
-// Inicializa botones deshabilitados
+// Inicializar botones 
 $(document).ready(function() {
   $('#rutaBtn').prop('disabled', true);
   $('#borrarRutaBtn').prop('disabled', true);
@@ -38,7 +38,7 @@ $(document).ready(function() {
   $('#infoList').prop('hidden',true);
 });
 
-//Actualizo los stops que muestro en la lista.
+//Actualizo los puntos que muestro en la lista.
 function actualizarPuntos(){
   $('#listaPtos').empty();
   var j = 0;
@@ -96,7 +96,7 @@ function eliminarPto(id){
   }else{
     $("#listMsj").prop('hidden', true);
   }
-  if (puntos.length>1){
+  if (puntos.length>=2){
     $("#rutaBtn").prop('disabled', false);
   }else{
     $("#rutaBtn").prop('disabled', true);
