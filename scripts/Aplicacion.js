@@ -121,14 +121,6 @@ require([
     "http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
   );
   map.addLayer(tiled);
-  //creo la busqueda
-  search = new Search(
-    {
-      map: map
-    },
-    "search"
-  );
-  search.startup();
 
   //creo la busqueda
   search=new Search({sources: [
