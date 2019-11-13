@@ -95,12 +95,19 @@ require([
   //Le agrego la base
   var tiled = new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer");
   map.addLayer(tiled);
-  //creo la busqueda
-   search = new Search({
-   map: map
-   }, "search");
-   search.startup();
 
+  //creo la busqueda
+  search=new Search({sources: [
+      {
+        locator: new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"),
+        placeholder: "Definir stops",
+        countryCode: "US"
+      }
+    ],
+    map: map
+  }, "search");
+  search.startup();
+  
   //seteo el handler busqueda
   search.on ("search-results", searchHandler);
 
@@ -155,7 +162,7 @@ require([
   }
   }
 
-  //Capa para subir puntos al servidor
+  //Layer para subir puntos al servidor
   var pointsFeatureLayer = FeatureLayer("http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0", {
     mode: FeatureLayer.MODE_SNAPSHOT,
     outFields: ["*"]
@@ -294,7 +301,7 @@ require([
   //seteo el handler ruteo
   routeTask.on("solve-complete", dibujarRuta);
 
-    // Handler para ibujar la ruta calculada
+    // Handler para dibujar la ruta calculada
   function dibujarRuta(evt) {
     borrarRutas();
     array.forEach(evt.result.routeResults, function(routeResult, i) {
@@ -537,7 +544,6 @@ function moverMovil(){
         var interseccion = queryTaskCounties.execute(queryCounties);
 
         queryTaskCounties.on("error", function(err){
-          alert(err)
         });
 
         queryTaskCounties.on("complete", function(evt) {
@@ -625,10 +631,7 @@ function stopSimulacion(){
   $('#infoList').prop('hidden',true);
 }
 
-
-
-
-// Printerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+//**********************************  Printer******************************************************************************************************************************/
 var printer = new Print({
   map: map,
   url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
@@ -642,8 +645,8 @@ var printer = new Print({
       copyrightText: "SIG",
     },
     exportOptions: {
-      width: 500,
-      height: 400,
+      width: 640,
+      height: 480,
       dpi: 96
     }
   }]
