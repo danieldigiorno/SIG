@@ -36,7 +36,7 @@
 				<button id="stop"></button>
 			</div>
 			<div class="right">
-				<button id="printButton">
+				<button id="printButton" class="print">
 				<button id="help" class="help">
 			</div>
 			<!-- The Modal -->
@@ -65,6 +65,8 @@
 			</div>
 			
 			<div class="sub-section">
+				<span>Ingrese los puntos de la ruta</span>
+				<br>
 				<div id="search"></div>
 				<br>
 				<div id="listaPtos"style = "margin-right:10px; text-align:left">
@@ -82,20 +84,24 @@
 					<button id="borrarRutaBtn" class="boton-other">Borrar Ruta</button>
 				</div>
 				<br>
+				<span>Rutas precalculadas</span>
+				<br>
+				
 				<select id="selectedRoute" class="form-control"
-					style="width: 40%; float: left; margin-right: 2%;">
+					style="width: 40%; float: left; margin-right: 10px;">
 					<option value="Ruta 1">Ruta 1</option>
 					<option value="Ruta 2">Ruta 2</option>
 					<option value="Ruta 3">Ruta 3</option>
 					<option value="Ruta 4">Ruta 4</option>
 					<option value="Ruta 5">Ruta 5</option>
 				</select>
-				<button id="cargarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Cargar ruta">
-					<i class="glyphicon glyphicon-road"></i>
+				<button id="cargarRutaBtn" class="boton" data-toggle="tooltip" title="Cargar ruta" style="padding:4px; border-radius: 5px;">
+					Cargar
 				</button>
-				<button id="guardarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Guardar ruta">
-					<i class="glyphicon glyphicon-floppy-save"></i>
+				<button id="guardarRutaBtn" class="boton" data-toggle="tooltip" title="Guardar ruta" style="padding:4px; border-radius: 5px;">
+					Guardar
 				</button>
+				<br><br>
 			</div>
 
 			<div class="sub-section">
