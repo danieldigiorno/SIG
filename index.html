@@ -10,21 +10,16 @@
 
 <title>SIG 2019 - Grupo 2</title>
 
-<!-- Bootstrap Core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<!-- <link href="css/lab.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet"> -->
-<link href="css/mystyle.css" rel="stylesheet">
+<link href="css/_style.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://js.arcgis.com/3.30/esri/css/esri.css">
 <link rel="stylesheet"	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
-
 <script src=" http://code.jquery.com/jquery-latest.min.js"></script>
-<!-- <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
 <script src="https://js.arcgis.com/3.30/"></script>
-<script src="scripts/aplicacion_aux.js"></script>
-<script src="scripts/Aplicacion.js"></script>
+<script src="scripts/global.js"></script>
+<script src="scripts/aplicacion.js"></script>
 </head>
 
 <body>
@@ -129,138 +124,7 @@
 		</section>
 	</section>
 
-
-
-
-	<!-- Esta es la sección vieja -->
-	<!-- <section>
-		<div class="row">
-			<div style="margin-left: 2%;">
-				<div class="row">
-					<div class="col-md-12 col-map">
-						
-						<div id="ptosList" class="col-md-4">
-							<div class="panel panel-success listaPuntos">
-
-								<div class="panel-heading">
-									<h3 class="panel-title" style="font-size: 100%;">Lista de puntos</h3>
-									<span class="pull-right clickable">
-										<i class="glyphicon glyphicon-minus"></i>
-									</span>
-								</div>
-
-								<div class="panel-body">
-							
-									<div class="row" id="listaPtos">
-										<div id="list-items"></div>
-									</div>
-									<div class="row" style = "margin:2%; text-align:center">
-										<button id="subirPtosBtn" class="btn btn-success" data-toggle="tooltip" title="Subir puntos">
-	
-											<i class="glyphicon glyphicon-upload"></i>
-										</button>
-										<button id="borrarPtosBtn" class="btn btn-success" data-toggle="tooltip" title="Borrar puntos">
-	
-											<i class="glyphicon glyphicon-trash"></i>
-										</button>
-										<button id="descargarPtosBtn" class="btn btn-success" data-toggle="tooltip" title="Descargar puntos">
-	
-											<i class="glyphicon glyphicon-download"></i>
-										</button>
-									</div>
-									<div class="row" style = "margin:2%; text-align:center" >
-										<button id="rutaBtn" class="btn btn-primary">
-											Calcular Ruta
-										</button>
-										<button id="borrarRutaBtn" class="btn btn-primary" >
-											Borrar Ruta
-										</button>
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-						<div id="infoList" class="col-md-4">
-							<div class="panel panel-success listaPuntos" style="background-color: rgba(82,84,82,0.75); color: #d0e9c6;font-weight: 300;">
-
-								<div class="panel-heading">
-									<h3 class="panel-title" style="font-size: 100%;">Info de puntos</h3>
-									<span class="pull-right clickable">
-										<i class="glyphicon glyphicon-minus"></i>
-									</span>
-								</div>
-
-								<div class="panel-body" style="margin:2%">
-									<div class="row" id="infoSimu">
-										<div id="list-items"></div>
-									</div>
-								</div>
-
-							</div>
-						</div>
-						<div class="row" style="margin-bottom:1%; margin-top: 1%;display: flex;">
-							
-
-
-							<div class="col-md-2" style="text-align:center;padding:2px;width: 150px;">
-								<button id="startBtn" class="btn btn-success">
-									<i class="glyphicon glyphicon-play" style="color:#fff"></i>
-								</button>
-								<button id="stopBtn" class="btn btn-primary">
-									<i class="glyphicon glyphicon-stop"></i>
-								</button>
-							</div>
-
-		
-							<div class="col-md-1">
-								<div class="onoffswitch" style="margin-left:1%;">
-									<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
-									<label class="onoffswitch-label" for="myonoffswitch" >
-											<span class="onoffswitch-inner"></span>
-											<span class="onoffswitch-switch" style="height: 22px;"></span>
-									</label>
-								</div>
-							</div>
-
-
-							<div class="col-md-5">
-								<div>
-									<select id="selectedRoute" class="form-control"
-										style="width: 40%; float: left; margin-right: 2%;">
-										<option value="Ruta 1">Ruta 1</option>
-										<option value="Ruta 2">Ruta 2</option>
-										<option value="Ruta 3">Ruta 3</option>
-										<option value="Ruta 4">Ruta 4</option>
-										<option value="Ruta 5">Ruta 5</option>
-									</select>
-									<button id="cargarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Cargar ruta">
-										<i class="glyphicon glyphicon-road"></i>
-									</button>
-									<button id="guardarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Guardar ruta">
-										<i class="glyphicon glyphicon-floppy-save"></i>
-									</button>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-				</div>
-
-			</div>
-
-			</div>
-		</div>
-	</section> -->
-
-	<!-- Core JavaScript Files -->
 	<script src="scripts/jquery.min.js"></script>
-	<!--<script src="js/bootstrap.min.js"></script>-->
-	<!-- <script src="scripts/jquery.easing.min.js"></script>
-	<script src="scripts/jquery.scrollTo.js"></script> -->
-	<!-- <script src="scripts/wow.min.js"></script> -->
-	<!-- Custom Theme JavaScript -->
 	<script src="scripts/modal.js"></script>
 
 </body>

@@ -1,55 +1,4 @@
-// Expandir y contraer menu
-// $(document).on("click", ".panel-heading span.clickable", function(e) {
-//   var $this = $(this);
-//   if (!$this.hasClass("panel-collapsed")) {
-//     $this
-//       .parents(".panel")
-//       .find(".panel-body")
-//       .slideUp();
-//     $this.addClass("panel-collapsed");
-//     $this
-//       .find("i")
-//       .removeClass("glyphicon-minus")
-//       .addClass("glyphicon-plus");
-//   } else {
-//     $this
-//       .parents(".panel")
-//       .find(".panel-body")
-//       .slideDown();
-//     $this.removeClass("panel-collapsed");
-//     $this
-//       .find("i")
-//       .removeClass("glyphicon-plus")
-//       .addClass("glyphicon-minus");
-//   }
-// });
-
-// $(document).on("click", ".panel div.clickable", function(e) {
-//   var $this = $(this);
-//   if (!$this.hasClass("panel-collapsed")) {
-//     $this
-//       .parents(".panel")
-//       .find(".panel-body")
-//       .slideUp();
-//     $this.addClass("panel-collapsed");
-//     $this
-//       .find("i")
-//       .removeClass("glyphicon-minus")
-//       .addClass("glyphicon-plus");
-//   } else {
-//     $this
-//       .parents(".panel")
-//       .find(".panel-body")
-//       .slideDown();
-//     $this.removeClass("panel-collapsed");
-//     $this
-//       .find("i")
-//       .removeClass("glyphicon-plus")
-//       .addClass("glyphicon-minus");
-//   }
-// });
-
-// Inicializar botones
+// Inicializa con botones deshabiilitados
 $(document).ready(function() {
   $("#rutaBtn").prop("disabled", true);
   $("#borrarRutaBtn").prop("disabled", true);
@@ -61,7 +10,6 @@ $(document).ready(function() {
   $("#infoList").prop("hidden", true);
 });
 
-//Actualizo los puntos que muestro en la lista.
 function actualizarPuntos() {
   $("#listaPtos").empty();
   var j = 0;
@@ -123,38 +71,33 @@ function actualizarPuntos() {
 }
 
 function subirPunto(id) {
-  //intercambiar puntos
   var aux = puntos[id];
   puntos[id] = puntos[id - 1];
   puntos[id - 1] = aux;
-  //intercambiar stops
+
   var stopAux = routeParams.stops.features[id];
   routeParams.stops.features[id] = routeParams.stops.features[id - 1];
   routeParams.stops.features[id - 1] = stopAux;
-  //actualizar lista puntos web
   actualizarPuntos();
 }
+
 function bajarPunto(id) {
-  //intercambiar puntos
   var aux = puntos[id];
   puntos[id] = puntos[id + 1];
   puntos[id + 1] = aux;
-  //intercambiar stops
+
   var stopAux = routeParams.stops.features[id];
   routeParams.stops.features[id] = routeParams.stops.features[id + 1];
   routeParams.stops.features[id + 1] = stopAux;
-  //actualizar lista puntos web
   actualizarPuntos();
 }
-function eliminarPto(id) {
-  // saca el punto del array de puntos
-  puntos.splice(id, 1);
 
-  // Saca el punto de los stops
+function eliminarPto(id) {
+  puntos.splice(id, 1);
   map.graphics.remove(routeParams.stops.features.splice(id, 1)[0]);
   actualizarPuntos();
+
   pointServiceLayer.clear();
-  // Cartel de No hay puntos
   if (puntos.length == 0) {
     $("#listMsj").prop("hidden", false);
     $("#subirPtosBtn").prop("disabled", true);
