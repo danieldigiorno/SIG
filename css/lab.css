@@ -5,18 +5,18 @@ html, body, #map {
 	padding: 0;
 }
 
-#search {
+/* #search {
 	display: block;
 	position: absolute;
 	z-index: 2;
 	top: 4px;
 	left: 71%;
-}
+} */
 
 #map_zoom_slider{
 	left:97%;
 }
-
+/* 
 #startBtn{
 	margin-left:1%;
 	border-radius: 50px;
@@ -31,12 +31,12 @@ html, body, #map {
 	border-width: 4px;
 	border-color: white;
   padding: 14px 17px;
-}
+} */
 
-.listaPuntos{
+/* .listaPuntos{
     display: block;
     position: absolute;
-		min-width: 100%;
+	min-width: 100%;
     z-index: 2;
     top: 30px;
     left: 6%;
@@ -44,7 +44,7 @@ html, body, #map {
 .esriPopup .contentPane{
 	background-color: #fff0 !important;
 	color: #376f50 !important;
-}
+} */
 
 .row-map{
 	padding-left: 0px;
@@ -67,13 +67,13 @@ html, body, #map {
 	color: #fff;
 }
 
-.top-nav-collapse {
+/* .top-nav-collapse {
     background: #13945b;
-}
+} */
 
-.list-items {
+/* .list-items {
 	margin-left: 2%;
-}
+} */
 
 .btn-link {
 	background: none !important;
