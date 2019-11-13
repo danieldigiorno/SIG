@@ -624,7 +624,13 @@ require([
             );
             var num = i + 1;
             counties +=
-              name + ": " + pop_inter_countie + "/" + pop_countie + "<br/>";
+              "&#8226; " +
+              name +
+              ": " +
+              pop_inter_countie +
+              "/" +
+              pop_countie +
+              "<br/>";
 
             graphic.setSymbol(symbol);
             movilLayer.add(graphic);
