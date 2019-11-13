@@ -58,13 +58,15 @@
 	<section id="contact" style="display:flex;">
 		<section class="sidebar-left">
 			<div class="sub-section" id="infoList">
-				<span>Información de la simulación</span>
+				<span>INFORMACIÓN DE LA SIMULACIÓN</span>
 				<div id="infoSimu">
 					<div id="list-items"></div>
 				</div>
 			</div>
 			
 			<div class="sub-section">
+				<span>RUTAS</span>
+				<br>
 				<div id="search"></div>
 				<br>
 				<div id="listaPtos"style = "margin-right:10px; text-align:left">
@@ -82,16 +84,17 @@
 					<button id="borrarRutaBtn" class="boton-other">Borrar Ruta</button>
 				</div>
 				<br>
+				
 				<select id="selectedRoute" class="form-control"
-					style="width: 40%; float: left; margin-right: 2%;">
+					style="margin-right: 10px; margin-bottom: 10px;">
 					<option value="Ruta 1">Ruta 1</option>
 					<option value="Ruta 2">Ruta 2</option>
 					<option value="Ruta 3">Ruta 3</option>
 					<option value="Ruta 4">Ruta 4</option>
 					<option value="Ruta 5">Ruta 5</option>
 				</select>
-				<button id="cargarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Cargar ruta">
-					<i class="glyphicon glyphicon-road"></i>
+				<button id="cargarRutaBtn" class="boton" data-toggle="tooltip" title="Cargar ruta" style="padding:4px; border-radius: 5px;">
+					Cargar en el mapa
 				</button>
 				<button id="guardarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Guardar ruta">
 					<i class="glyphicon glyphicon-floppy-save"></i>
@@ -99,7 +102,8 @@
 			</div>
 
 			<div class="sub-section">
-				<span> Indique el radio del buffer</span>
+				<span>PARÁMETROS DE LA SIMULACIÓN</span>
+				<span>Indique el radio del buffer</span>
 				<form id="radioSelect">
 					<input type="checkbox" name="rd-buffer" id="p" value:"p" checked> Pequeño
 					<input type="checkbox" name="rd-buffer" id="m" value:"m"> Mediano

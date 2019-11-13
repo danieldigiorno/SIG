@@ -647,7 +647,7 @@ require([
               counties +
               "<b>Total población en buffer: </b>" +
               total_population +
-              " hábitantes <br/>"
+              " habitantes <br/>"
           ).appendTo("#infoSimu");
         });
       }
