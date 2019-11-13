@@ -233,3 +233,8 @@ html {
   font-family: "Baloo";
   border: #5c5f30 solid 2px;
 }
+
+a {
+  color: white;
+  font-style: oblique;
+}
