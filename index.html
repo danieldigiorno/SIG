@@ -36,7 +36,7 @@
 				<button id="stop"></button>
 			</div>
 			<div class="right">
-				<button id="printButton">
+				<button id="printButton" class="print">
 				<button id="help" class="help">
 			</div>
 			<!-- The Modal -->
@@ -96,21 +96,21 @@
 				<button id="cargarRutaBtn" class="boton" data-toggle="tooltip" title="Cargar ruta" style="padding:4px; border-radius: 5px;">
 					Cargar en el mapa
 				</button>
-				<button id="guardarRutaBtn" class="btn btn-success" data-toggle="tooltip" title="Guardar ruta">
-					<i class="glyphicon glyphicon-floppy-save"></i>
+				<button id="guardarRutaBtn" class="boton" data-toggle="tooltip" title="Guardar ruta" style="padding:4px; border-radius: 5px;">
+					Guardar ruta
 				</button>
 			</div>
 
 			<div class="sub-section">
 				<span>PARÁMETROS DE LA SIMULACIÓN</span>
-				<span>Indique el radio del buffer</span>
+				<span>Indique el tamaño del buffer</span>
 				<form id="radioSelect">
 					<input type="checkbox" name="rd-buffer" id="p" value:"p" checked> Pequeño
 					<input type="checkbox" name="rd-buffer" id="m" value:"m"> Mediano
 					<input type="checkbox" name="rd-buffer" id="g" value:"g"> Grande
 				</form>
 				<br>
-				<span> Indique la velocidad del móvil</span>
+				<span>Indique la velocidad del móvil</span>
 				<form>
 					<input type="checkbox" name="rd-velocidad" id="vbaja" value="vbaja" checked> Baja
 					<input type="checkbox" name="rd-velocidad" id="vmedia" value="vmedia"> Media

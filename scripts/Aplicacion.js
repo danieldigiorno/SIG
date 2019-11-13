@@ -123,17 +123,23 @@ require([
   map.addLayer(tiled);
 
   //creo la busqueda
-  search=new Search({sources: [
-      {
-        locator: new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"),
-        placeholder: "Definir stops",
-        countryCode: "US"
-      }
-    ],
-    map: map
-  }, "search");
+  search = new Search(
+    {
+      sources: [
+        {
+          locator: new Locator(
+            "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
+          ),
+          placeholder: "Definir stops",
+          countryCode: "US"
+        }
+      ],
+      map: map
+    },
+    "search"
+  );
   search.startup();
-  
+
   //seteo el handler busqueda
   search.on("search-results", searchHandler);
 
@@ -618,7 +624,7 @@ require([
             );
             var num = i + 1;
             counties +=
-              name + ": " + pop_inter_countie + " / " + pop_countie + "<br/>";
+              name + ": " + pop_inter_countie + "/" + pop_countie + "<br/>";
 
             graphic.setSymbol(symbol);
             movilLayer.add(graphic);
@@ -632,12 +638,12 @@ require([
 
           $("#infoSimu").empty();
           $(
-            "<b> Estado: </b>" +
+            "<span> Estado: </span>" +
               nombreEstado +
               "<br/>" +
-              "<b>Condado : Pob en buffer / Pob Total: </b><br/>" +
+              "<span>[Condado]: [buffer/total] habitantes </span><br/>" +
               counties +
-              "<b>Total población en buffer: </b>" +
+              "<span>Suma total = </span>" +
               total_population +
               " habitantes <br/>"
           ).appendTo("#infoSimu");
@@ -689,7 +695,7 @@ require([
           format: "PDF",
           layout: "A4 Portrait",
           layoutOptions: {
-            titleText: "Laboratorio 2",
+            titleText: "SIG 2019 - Laboratorio 2",
             authorText: "Grupo 2",
             copyrightText: "SIG"
           },
