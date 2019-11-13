@@ -31,8 +31,11 @@
 	<nav class="navbar-box">
 		<div class="navbar-content">
 			<div class="navbar-title">SIG 2019 - GRUPO 2</div>
+			<div class="center">
+				<button id="start"></button>
+				<button id="stop"></button>
+			</div>
 			<div class="right">
-				
 				<button id="printButton">
 				<button id="help" class="help">
 			</div>
@@ -54,48 +57,31 @@
 	</nav>
 	<section id="contact" style="display:flex;">
 		<section class="sidebar-left">
-			<div style="display: flex; justify-content: center; margin: 10px; padding-right: 15px;">
-				<button style="margin: 10px;" id="start">Start</button>
-				<button style="margin: 10px;" id="stop">Stop</button>
+			<div class="sub-section" id="infoList">
+				<span>Información de la simulación</span>
+					<div id="infoSimu">
+						<div id="list-items"></div>
+					</div>
 			</div>
-
-			<div class="checkbox-section">
-				<span> Indique el radio del buffer </span>
-				<form id="radioSelect">
-					<input type="checkbox" name="rd-buffer" id="p" value:"p" checked> Pequeño
-					<input type="checkbox" name="rd-buffer" id="m" value:"m"> Mediano
-					<input type="checkbox" name="rd-buffer" id="g" value:"g"> Grande
-				</form>
-			</div>
-
-			<div class="checkbox-section">
-				<span> Indique la velocidad del móvil </span>
-				<form>
-					<input type="checkbox" name="rd-velocidad" id="vbaja" value="vbaja" checked> Baja
-					<input type="checkbox" name="rd-velocidad" id="vmedia" value="vmedia"> Media
-					<input type="checkbox" name="rd-velocidad" id="valta" value="valta"> Alta
-				</form>
-			</div>
-
-			<div class="checkbox-section">
-				<span> Zoom automático </span>
-				<input type="checkbox" name="onoffswitch" id="myonoffswitch" checked>
-			</div>
-
-			<div id="search"></div>
-			<div id="listaPtos"style = "margin-right:10px; text-align:left">
-				<div id="list-items"></div>
-			</div>
-			<div>
-				<button id="subirPtosBtn" class="btn btn-success" data-toggle="tooltip">Cargar</button>
-				<button id="borrarPtosBtn" class="btn btn-success" data-toggle="tooltip">Eliminar todos</button>
-				<button id="descargarPtosBtn" class="btn btn-success" data-toggle="tooltip">Descargar</button>
-			</div>
-			<div>
-				<button id="rutaBtn" class="btn btn-primary"> Calcular Ruta</button>
-				<button id="borrarRutaBtn" class="btn btn-primary">Borrar Ruta</button>
-			</div>
-			<div>
+			
+			<div class="sub-section">
+				<div id="search"></div>
+				<br>
+				<div id="listaPtos"style = "margin-right:10px; text-align:left">
+					<div id="list-items"></div>
+				</div>
+				<br>
+				<div>
+					<button id="subirPtosBtn" class="btn btn-success" data-toggle="tooltip">Cargar</button>
+					<button id="borrarPtosBtn" class="btn btn-success" data-toggle="tooltip">Eliminar todos</button>
+					<button id="descargarPtosBtn" class="btn btn-success" data-toggle="tooltip">Descargar</button>
+				</div>
+				<br>
+				<div>
+					<button id="rutaBtn" class="btn btn-primary"> Calcular Ruta</button>
+					<button id="borrarRutaBtn" class="btn btn-primary">Borrar Ruta</button>
+				</div>
+				<br>
 				<select id="selectedRoute" class="form-control"
 					style="width: 40%; float: left; margin-right: 2%;">
 					<option value="Ruta 1">Ruta 1</option>
@@ -111,6 +97,26 @@
 					<i class="glyphicon glyphicon-floppy-save"></i>
 				</button>
 			</div>
+
+			<div class="sub-section">
+				<span> Indique el radio del buffer</span>
+				<form id="radioSelect">
+					<input type="checkbox" name="rd-buffer" id="p" value:"p" checked> Pequeño
+					<input type="checkbox" name="rd-buffer" id="m" value:"m"> Mediano
+					<input type="checkbox" name="rd-buffer" id="g" value:"g"> Grande
+				</form>
+				<br>
+				<span> Indique la velocidad del móvil</span>
+				<form>
+					<input type="checkbox" name="rd-velocidad" id="vbaja" value="vbaja" checked> Baja
+					<input type="checkbox" name="rd-velocidad" id="vmedia" value="vmedia"> Media
+					<input type="checkbox" name="rd-velocidad" id="valta" value="valta"> Alta
+				</form>
+				<br>
+				<span> Zoom automático</span>
+				<input type="checkbox" name="onoffswitch" id="myonoffswitch" checked>
+			</div>
+			
 
 		</section>
 		<section style="display:flex;">
