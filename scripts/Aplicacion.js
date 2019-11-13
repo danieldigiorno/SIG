@@ -218,7 +218,7 @@ require([
       var newGraphic = new Graphic(ptoNuevo.geometry, puntoSymbol, attributes);
       pointsFeatureLayer.applyEdits([newGraphic], null, null);
     });
-    alert("Puntos guardados");
+    alert("Los puntos han sido guardados con éxito");
   }
 
   // Capa donde se ponen los puntos descargados del servicio
@@ -238,7 +238,7 @@ require([
     // Se dibujan los puntos obtenidos en la query del servicio
     function cargoPuntosServicio(response) {
       if (response.features.length == 0) {
-        alert("No hay puntos subidos");
+        alert("Error: no hay puntos subidos para cargar");
       } else {
         var features = response.features;
         for (var i = 0; i < features.length; i++) {
@@ -413,7 +413,7 @@ require([
     //Handler para dibujar la ruta obtenida en la query del servicio
     function dibujarRutaGuardadaHandler(response) {
       if (response.features.length == 0) {
-        alert("No existia una ruta guardada en este lugar");
+        alert("Error: no se encuentra ninguna ruta guardada previamente");
       } else {
         // Si había ruta cargada, se borra.
         borrarRutas();
@@ -632,7 +632,7 @@ require([
           }
 
           var tipoRadio;
-          if ($("#p")[0].checked) tipoRadio = "Pequeño";
+          if ($("#p")[0].checked) tipoRadio = "Chico";
           else if ($("#m")[0].checked) tipoRadio = "Mediano";
           else if ($("#g")[0].checked) tipoRadio = "Grande";
 
@@ -668,7 +668,7 @@ require([
       // Velocidad del móvil
       setTimeout(moverMovil, velocidad);
     } else {
-      alert("Simulación finalizada");
+      alert("La simulación ha sido finalizada con éxito");
     }
   }
 
