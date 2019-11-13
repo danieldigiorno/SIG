@@ -234,6 +234,15 @@ html {
   border: #5c5f30 solid 2px;
 }
 
+.boton-unset {
+  height: 14px;
+  width: 14px;
+  font-size: 12px;
+  background-color: rgb(241, 236, 236);
+  border-width: 0px;
+  margin-left: 4px;
+}
+
 a {
   color: white;
   font-style: oblique;

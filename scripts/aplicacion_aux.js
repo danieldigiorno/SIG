@@ -74,26 +74,26 @@ function actualizarPuntos() {
         j +
         ">" +
         j +
-        " " +
+        ") " +
         puntos[j].name +
         "</div>"
     ).appendTo("#listaPtos");
     $(
       "<button class=" +
-        "'btn btn-primary btn-link'" +
+        "'boton-unset'" +
         " id=" +
         "btn_" +
         j +
         " onclick=" +
         "eliminarPto(" +
         j +
-        ') style="float:right;margin-right:5px"' +
-        '><i class="glyphicon glyphicon-trash"></i></button>'
+        ') style="float:right; margin-right:5px; margin-left:10px"' +
+        ">&#10060</button>"
     ).appendTo("#elem_" + j);
     if (j > 0) {
       $(
         "<button class=" +
-          "'btn btn-primary btn-link'" +
+          "'boton-unset'" +
           " id=" +
           "up_btn_" +
           j +
@@ -101,13 +101,13 @@ function actualizarPuntos() {
           "subirPunto(" +
           j +
           ') style="float:right" ' +
-          '><i class="glyphicon glyphicon-arrow-up"></i></button>'
+          ">&#9650</button>"
       ).appendTo("#elem_" + j);
     }
     if (j < puntos.length - 1) {
       $(
         "<button class=" +
-          "'btn btn-primary btn-link'" +
+          "'boton-unset'" +
           " id=" +
           "down_btn_" +
           j +
@@ -115,7 +115,7 @@ function actualizarPuntos() {
           "bajarPunto(" +
           j +
           ') style="float:right" ' +
-          '><i class="glyphicon glyphicon-arrow-down"></i></button>'
+          ">&#9660</button>"
       ).appendTo("#elem_" + j);
     }
     j++;
