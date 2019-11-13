@@ -326,13 +326,14 @@ require([
 
   //Funcion para calcular ruta
   function calcularRuta() {
+    document.getElementById("rutaBtn").innerHTML = "Cargando...";
     routeTask.solve(routeParams);
   }
 
   //seteo el handler ruteo
   routeTask.on("solve-complete", dibujarRuta);
 
-  // Handler para ibujar la ruta calculada
+  // Handler para dibujar la ruta calculada
   function dibujarRuta(evt) {
     borrarRutas();
     array.forEach(evt.result.routeResults, function(routeResult, i) {
@@ -348,6 +349,7 @@ require([
     $(dom.byId("start")).prop("disabled", false);
     $(dom.byId("borrarRutaBtn")).prop("disabled", false);
     $(dom.byId("guardarRutaBtn")).prop("disabled", false);
+    document.getElementById("rutaBtn").innerHTML = "Calcular ruta";
   }
 
   // Botón para borrar rutas
