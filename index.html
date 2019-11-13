@@ -18,6 +18,7 @@
 <script src="https://js.arcgis.com/3.30/"></script>
 <script src="scripts/global.js"></script>
 <script src="scripts/aplicacion.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 
 <body>
@@ -99,21 +100,31 @@
 				<br>
 				<span>Indique el tamaño del buffer</span>
 				<form id="radioSelect">
-					<input type="checkbox" name="rd-buffer" id="p" value:"p" checked> Chico
+					<input class="tam-buffer" type="checkbox" name="rd-buffer" id="p" value:"p" checked> Chico
 					<br>
-					<input type="checkbox" name="rd-buffer" id="m" value:"m"> Mediano
+					<input class="tam-buffer" type="checkbox" name="rd-buffer" id="m" value:"m"> Mediano
 					<br>
-					<input type="checkbox" name="rd-buffer" id="g" value:"g"> Grande
+					<input class="tam-buffer" type="checkbox" name="rd-buffer" id="g" value:"g"> Grande
 				</form>
+				<script type="text/javascript">
+					$('.tam-buffer').on('change', function() {
+						$('.tam-buffer').not(this).prop('checked', false);  
+					});
+				</script>
 				<br>
 				<span>Indique la velocidad del móvil</span>
 				<form>
-					<input type="checkbox" name="rd-velocidad" id="vbaja" value="vbaja" checked> Baja
+					<input class="vel-movil" type="checkbox" name="rd-velocidad" id="vbaja" value="vbaja" checked> Baja
 					<br>
-					<input type="checkbox" name="rd-velocidad" id="vmedia" value="vmedia"> Media
+					<input class="vel-movil" type="checkbox" name="rd-velocidad" id="vmedia" value="vmedia"> Media
 					<br>
-					<input type="checkbox" name="rd-velocidad" id="valta" value="valta"> Alta
+					<input class="vel-movil" type="checkbox" name="rd-velocidad" id="valta" value="valta"> Alta
 				</form>
+				<script type="text/javascript">
+					$('.vel-movil').on('change', function() {
+						$('.vel-movil').not(this).prop('checked', false);  
+					});
+				</script>
 				<br>
 				<span>¿Rastreo automático del móvil? </span>
 				<input type="checkbox" name="onoffswitch" id="myonoffswitch" checked>
