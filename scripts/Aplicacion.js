@@ -685,7 +685,7 @@ require([
     $("#infoList").prop("hidden", true);
   }
 
-  // Printerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+  /**************************************************PRINTER******************************************************************************************************* */
   var printer = new Print(
     {
       map: map,
