@@ -59,55 +59,31 @@ require([
   var terminarSIM = false;
   var iter,
     salto = 0;
-  var distanciaPuntos = 0;
   var stateActual = "";
   var stateAnterior = "";
   var color_actual = 1;
   var rutaServicioLayer;
 
-  /*
-  $.ajax({
-    'url': "https://www.arcgis.com/sharing/rest/oauth2/token/",
-    'dataType': "json",
-    'content-Type': 'x-www-form-urlencoded',
-    'data': {
-      'client_id': 'DHxuEWKcbfnwe1pj',
-      'client_secret': 'b6b8c27cd2704c3aaa1a0f37abd32e75',
-      'grant_type': 'client_credentials'
-    },
-    'type': 'POST',
-    'success': function(response) {
-      token = response.access_token;
-      expiresIn = response.expires_in;
-    },
-    'error': function(errorThrown) {
-      alert(errorThrown.error);
-    }
-  });
-  */
-
   /**********************************************Simbolos********************************************************************************* */
-  // Símbolos para los puntos
+  // Para los puntos
   var simboloPunto = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE);
   simboloPunto.setColor(new Color([230, 0, 0, 1]));
   simboloPunto.setSize(12);
 
-  // Símbolo para el móvil
+  // Para el móvil
   var simboloMovil = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_SQUARE);
   simboloMovil.setPath(
     "M16,3.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.143,7.5,18.121,7.5,18.121S23.5,15.143,23.5,11C23.5,6.858,20.143,3.5,16,3.5z M16,14.584c-1.979,0-3.584-1.604-3.584-3.584S14.021,7.416,16,7.416S19.584,9.021,19.584,11S17.979,14.584,16,14.584z"
   );
   simboloMovil.setOffset(0, 20);
-  //simboloMovil.setColor(new Color([133, 133, 133, 1]));
   simboloMovil.setSize(26);
 
-  //Símbolo para la ruta
+  // Para la ruta
   var simboloRuta = new SimpleLineSymbol()
     .setColor(new Color([0, 0, 255, 0.5]))
     .setWidth(4);
 
   //*******************************************MAPA    SEARCH ***************************************************************************** */
-  //Creo el mapa
   map = new Map("map", {
     fadeOnZoom: true,
     center: [-90, 37],
@@ -116,13 +92,13 @@ require([
     smartNavigation: false
   });
 
-  //Le agrego la base
+  // Base del mapa
   var tiled = new ArcGISTiledMapServiceLayer(
     "http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer"
   );
   map.addLayer(tiled);
 
-  //creo la busqueda
+  // Búsqueda del mapa
   search = new Search(
     {
       sources: [
@@ -139,12 +115,10 @@ require([
     "search"
   );
   search.startup();
-
-  //seteo el handler busqueda
   search.on("search-results", searchHandler);
 
-  /*************************************************Manejo puntos********************************************************************************************* */
-  // Guardar Puntos de la busqueda
+  /************************************************* Manejo puntos ********************************************************************************************* */
+
   var cantElementos = 0;
   function searchHandler(evt) {
     if (evt != null) {
@@ -154,7 +128,7 @@ require([
       ptoNuevo.name = pto.name;
       ptoNuevo.geometry = pto.feature.geometry;
       ptoNuevo.symbol = simboloPunto;
-      //Busco si existe
+
       var existe = false;
       var i = 0;
       while (i < puntos.length && !existe) {
@@ -167,7 +141,7 @@ require([
       if (!existe) {
         puntos.push(ptoNuevo);
 
-        // Habilito botones si hay dos puntos o mas.
+        // "disabled" = false solo en caso de que haya dos o más puntos
         if (puntos.length > 1) {
           $(dom.byId("rutaBtn")).prop("disabled", false);
         } else if (puntos.length <= 1) {
@@ -182,9 +156,8 @@ require([
         $(dom.byId("subirPtosBtn")).prop("disabled", false);
         $(dom.byId("borrarPtosBtn")).prop("disabled", false);
 
-        // Agregar el stop a la ruta a calcular
+        // Agrega el stop y dibuja el punto en el mapa
         routeParams.stops.features.push(
-          // Dibujo el punto en el mapa
           map.graphics.add(new Graphic(ptoNuevo.geometry, ptoNuevo.symbol))
         );
         actualizarPuntos();
@@ -192,7 +165,7 @@ require([
     }
   }
 
-  //Capa para subir puntos al servidor
+  // Para subir puntos al servidor
   var pointsFeatureLayer = FeatureLayer(
     "http://sampleserver5.arcgisonline.com/arcgis/rest/services/LocalGovernment/Events/FeatureServer/0",
     {
@@ -201,11 +174,9 @@ require([
     }
   );
   pointsFeatureLayer.setSelectionSymbol(simboloPunto);
-
-  // Botón Subir Puntos
   on(dom.byId("subirPtosBtn"), "click", subirPuntos);
 
-  //funcion para guardar los puntos ingresados por el usuario en el servidor
+  // Para subir al servidor los puntos ingresados por el usuario
   function subirPuntos() {
     puntos.forEach(function(ptoNuevo) {
       var attributes = {
@@ -224,12 +195,12 @@ require([
   // Capa donde se ponen los puntos descargados del servicio
   pointServiceLayer = new GraphicsLayer({ opacity: 0.9 });
 
-  //Boton para descargar puntos del servidor
+  // Boton para descargar puntos del servidor
   on(dom.byId("descargarPtosBtn"), "click", descargarPuntos);
 
-  //Funcion para descargar puntos del servidor
+  // Funcion para descargar puntos del servidor
   function descargarPuntos() {
-    //Filtrar capa de puntos.
+    // Filtrar capa de puntos
     var query = new Query();
     query.where = "event_type = '13'";
     pointsFeatureLayer.selectFeatures(query);
@@ -462,7 +433,6 @@ require([
   }
 
   var radioBuffer;
-
   var nombreEstado;
   // Funcion para mover el movil
   var colorBuffer = new dojo.Color([0, 0, 255, 0.15]);
@@ -530,13 +500,12 @@ require([
           console.log("No se pudo obtener el state : " + err);
         });
 
+        // Cambio de color del buffer
         queryTaskStates.on("complete", function(evt) {
-          // Estado en el que se encunetra el punto
           stateAnterior = stateActual;
           stateActual = evt.featureSet.features[0].attributes.ST_ABBREV;
-          // Verificar cambio de estado
+
           if (stateAnterior != stateActual && stateAnterior != "") {
-            // Cambiar color buffer
             if (color_actual == 1) {
               color_actual = 2;
               colorBuffer = new dojo.Color([0, 255, 0, 0.15]);
@@ -544,7 +513,6 @@ require([
               color_actual = 1;
               colorBuffer = new dojo.Color([0, 0, 255, 0.15]);
             }
-            // Reproducir sonido al camiar de estado
           }
 
           var symbol = new esri.symbol.SimpleFillSymbol(
@@ -605,7 +573,7 @@ require([
             var graphic = resultFeatures[i];
             var name = graphic.attributes.NAME;
 
-            // Convertir millas^2 a km^2
+            // De millas a km
             var area_countie = Math.ceil(
               graphic.attributes.LANDAREA * 2,
               58998811
@@ -617,7 +585,6 @@ require([
               GeometryEngine.geodesicArea(inter, 109414)
             );
 
-            // Calculo de poblacion en la interseccion
             total_population += Math.ceil(
               (area_interseccion * pop_countie) / area_countie
             );
