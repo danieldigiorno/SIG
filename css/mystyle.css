@@ -169,6 +169,7 @@ html {
   background-color: rgb(241, 236, 236);
 
   border: #5c5f30 solid 2px;
+  border-radius: 7px;
   padding: 10px;
   margin-right: 20px;
   margin-bottom: 15px;
@@ -212,4 +213,20 @@ html {
 
 .esriPrint {
   padding: 4px !important;
+}
+
+.boton {
+  background-color: #5c5f30;
+  color: white;
+  font-size: 14px;
+  font-family: "Baloo";
+  border: #5c5f30 solid 2px;
+}
+
+.boton-other {
+  color: #5c5f30;
+  background-color: white;
+  font-size: 14px;
+  font-family: "Baloo";
+  border: #5c5f30 solid 2px;
 }
