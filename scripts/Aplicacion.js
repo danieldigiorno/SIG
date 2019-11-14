@@ -472,11 +472,11 @@ require([
       // Se dibuja el movil en el mapa.
       movilLayer.add(new Graphic(ptoSig, simboloMovil));
 
-      // El salto es proporcional a la cantidad de puntos que tenga la ruta
-      salto = parseInt(rutas[0].geometry.paths[0].length / 50); //Saltos
+      // Dividimos los puntos que forman la polilinea en 50 saltos
+      salto = parseInt(rutas[0].geometry.paths[0].length / 50); 
       iter = iter + salto;
 
-      // Dibujar buffer en la capa del móvil
+      // Dibuja buffer en la capa del móvil
       var params = new esri.tasks.BufferParameters();
       params.geometries = [ptoSig];
 
