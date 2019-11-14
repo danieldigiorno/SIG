@@ -422,6 +422,7 @@ require([
   function startSimulacion() {
     var cantPtosRta = 10;
     $("#start").prop("disabled", true);
+    $("#borrarRutaBtn").prop("disabled", true);
     $("#stop").prop("disabled", false);
     $("#ptosList").prop("hidden", true);
     $("#infoList").prop("hidden", false);
