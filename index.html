@@ -56,26 +56,26 @@
 			</div>
 
 			<div class="sub-section">
-				<span>PUNTOS</span>
+				<span>PUNTOS DE LA RUTA</span>
 				<br>
 				<div id="search"></div>
 				<br>
-				<div id="listaPtos"style = "margin-right:10px; text-align:left">
+				<div id="listaPtos" style = "margin-right:10px; text-align:left">
 					<div id="list-items"></div>
 				</div>
 				<br>
-				<div>
-					<button id="subirPtosBtn" class="boton" data-toggle="tooltip">Cargar</button>
-					<button id="borrarPtosBtn" class="boton" data-toggle="tooltip">Eliminar todos</button>
-					<button id="descargarPtosBtn" class="boton" data-toggle="tooltip">Descargar</button>
+				<div class="boton-ruta">
+					<button id="subirPtosBtn" class="boton-secundario" data-toggle="tooltip">Cargar</button>
+					<button id="borrarPtosBtn" class="boton-secundario" data-toggle="tooltip">Eliminar todos</button>
+					<button id="descargarPtosBtn" class="boton-secundario" data-toggle="tooltip">Descargar</button>
 				</div>
 				<br>
-				<div>
-					<button id="rutaBtn" class="boton-other"> Calcular Ruta</button>
-					<button id="borrarRutaBtn" class="boton-other">Borrar Ruta</button>
+				<div class="boton-ruta">
+					<button id="rutaBtn" class="boton-primario">Trazar ruta</button>
+					<button id="borrarRutaBtn" class="boton-primario">Borrar ruta</button>
 				</div>
 				<br>
-				<span>RUTAS</span>
+				<span>RUTAS PRECARGADAS</span>
 				<select id="selectedRoute" class="form-control"
 					style="margin-right: 10px; margin-bottom: 10px;">
 					<option value="Ruta 1">Ruta 1</option>
@@ -89,12 +89,15 @@
 					<option value="Ruta 9">Ruta 9</option>
 					<option value="Ruta 10">Ruta 10</option>
 				</select>
-				<button id="cargarRutaBtn" class="boton" data-toggle="tooltip" title="Cargar ruta" style="padding:4px; border-radius: 5px;">
-					Cargar en el mapa
-				</button>
-				<button id="guardarRutaBtn" class="boton" data-toggle="tooltip" title="Guardar ruta" style="padding:4px; border-radius: 5px;">
-					Guardar ruta
-				</button>
+
+				<div style = "display: inline-flex;">
+					<button id="cargarRutaBtn" class="boton-secundario" data-toggle="tooltip" title="Trazar ruta" style="padding: 0px 30px;">
+						Trazar ruta
+					</button>
+					<button id="guardarRutaBtn" class="boton-secundario" data-toggle="tooltip" title="Guardar ruta" style="padding: 0px 32px;">
+						Guardar ruta
+					</button>
+				</div>
 			</div>
 
 			<div class="sub-section">
