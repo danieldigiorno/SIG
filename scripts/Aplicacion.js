@@ -56,12 +56,12 @@ require([
   dom,
   on
 ) {
-  var terminarSIM = false;
+  var terminar = false;
   var iter,
     salto = 0;
-  var stateActual = "";
+  var estadoActual = "";
   var stateAnterior = "";
-  var color_actual = 1;
+  var colorActual = 1;
   var rutaServicioLayer;
 
   /**********************************************Simbolos********************************************************************************* */
@@ -365,6 +365,7 @@ require([
 
     // Subo la ruta en el servicio
     routesFeatureLayer.applyEdits([newGraphic], null, null);
+    alert("Ruta guardada con exito");
   }
   // Cargar ruta seleccionada
   on(dom.byId("cargarRutaBtn"), "click", cargarRuta);
@@ -429,7 +430,7 @@ require([
     iter = 0;
     // Comenzar timer.
     setTimeout(moverMovil, 100);
-    terminarSIM = false;
+    terminar = false;
   }
 
   var radioBuffer;
@@ -445,11 +446,15 @@ require([
       "http://services.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/4"
     );
 
-    if (!terminarSIM) {
+    if (!terminar) {
       // Si llegué al final o me pase de la cantidad de puntos entonces llegue al final
       if (iter >= rutas[0].geometry.paths[0].length - 1) {
         iter = rutas[0].geometry.paths[0].length - 1;
-        terminarSIM = true;
+        terminar = true;
+        //Actualizo botones
+        $("#stop").prop("disabled", true);
+        $("#start").prop("disabled", false);
+        movilLayer.clear();
       }
 
       // Punto siguiente del móvil.
@@ -467,16 +472,16 @@ require([
       movilLayer.add(new Graphic(ptoSig, simboloMovil));
 
       // El salto es proporcional a la cantidad de puntos que tenga la ruta
-      salto = parseInt(rutas[0].geometry.paths[0].length / 60); //Saltos
+      salto = parseInt(rutas[0].geometry.paths[0].length / 50); //Saltos
       iter = iter + salto;
 
-      // Dibujar buffer en el móvil
+      // Dibujar buffer en la capa del móvil
       var params = new esri.tasks.BufferParameters();
       params.geometries = [ptoSig];
 
       // Tamaño del buffer
-      if ($("#p")[0].checked) radioBuffer = 10;
-      else if ($("#m")[0].checked) radioBuffer = 25;
+      if ($("#p")[0].checked) radioBuffer = 15;
+      else if ($("#m")[0].checked) radioBuffer = 30;
       else if ($("#g")[0].checked) radioBuffer = 50;
 
       params.distances = [radioBuffer];
@@ -489,35 +494,46 @@ require([
         var bufferMovil = geometries[0];
 
         // Query States movil
-        var queryStates = new Query();
-        queryStates.returnGeometry = true;
-        queryStates.outFields = ["ST_ABBREV", "NAME"];
-        queryStates.geometry = ptoSig;
-        queryStates.spatialRelationship = Query.SPATIAL_REL_INTERSECTS;
+        var queryEstado = new Query();
+        queryEstado.returnGeometry = true;
+        queryEstado.outFields = ["ST_ABBREV", "NAME"];
+        queryEstado.geometry = ptoSig;
+        queryEstado.spatialRelationship = Query.SPATIAL_REL_INTERSECTS;
 
-        queryTaskStates.execute(queryStates);
+        queryTaskStates.execute(queryEstado);
         queryTaskStates.on("error", function(err) {
           console.log("No se pudo obtener el state : " + err);
         });
 
-        // Cambio de color del buffer
+        
         queryTaskStates.on("complete", function(evt) {
-          stateAnterior = stateActual;
-          stateActual = evt.featureSet.features[0].attributes.ST_ABBREV;
-
-          if (stateAnterior != stateActual && stateAnterior != "") {
-            if (color_actual == 1) {
-              color_actual = 2;
-              colorBuffer = new dojo.Color([0, 255, 0, 0.15]);
+          stateAnterior = estadoActual;
+          estadoActual = evt.featureSet.features[0].attributes.ST_ABBREV;
+          var symbolEstado = new SimpleFillSymbol(
+            SimpleFillSymbol.STYLE_NULL,
+            new SimpleLineSymbol(
+              SimpleFillSymbol.STYLE_SOLID,
+              new Color([230, 0, 169, 1]),
+              3
+            )
+          );
+          var geometryEstado= evt.featureSet.features[0].geometry;
+          var graphicEstado = new Graphic(geometryEstado, symbolEstado);
+          
+          // Cambio de color del buffer al cambiar de estado
+          if (stateAnterior != estadoActual && stateAnterior != "") {
+            if (colorActual == 1) {
+              colorActual = 2;
+              colorBuffer = new dojo.Color([255, 127, 127, 0.64]);
             } else {
-              color_actual = 1;
+              colorActual = 1;
               colorBuffer = new dojo.Color([0, 0, 255, 0.15]);
             }
           }
 
-          var symbol = new esri.symbol.SimpleFillSymbol(
+          var symbol = new SimpleFillSymbol(
             SimpleFillSymbol.STYLE_SOLID,
-            new esri.symbol.SimpleLineSymbol(
+            new SimpleLineSymbol(
               esri.symbol.SimpleLineSymbol.STYLE_SOLID,
               colorBuffer,
               2
@@ -526,9 +542,10 @@ require([
           );
 
           dojo.forEach(geometries, function(geometry) {
-            var graphic = new esri.Graphic(geometry, symbol);
+            var graphic = new Graphic(geometry, symbol);
             movilLayer.add(graphic);
             movilLayer.add(new Graphic(ptoSig, simboloMovil));
+            movilLayer.add(graphicEstado);
           });
 
           nombreEstado = evt.featureSet.features[0].attributes.NAME;
@@ -558,7 +575,7 @@ require([
           var pop_inter_countie = 0;
           var counties = "";
           var fset = evt.featureSet;
-          var symbol = new SimpleFillSymbol(
+          var symbolCondado = new SimpleFillSymbol(
             SimpleFillSymbol.STYLE_NULL,
             new SimpleLineSymbol(
               SimpleFillSymbol.STYLE_SOLID,
@@ -601,7 +618,7 @@ require([
               pop_countie +
               "<br/>";
 
-            graphic.setSymbol(symbol);
+            graphic.setSymbol(symbolCondado);
             movilLayer.add(graphic);
             movilLayer.add(new Graphic(ptoSig, simboloMovil));
           }
@@ -637,12 +654,13 @@ require([
         velocidad = 5000;
         simboloMovil.setColor(new Color([255, 255, 0, 1]));
       } else if ($("#valta")[0].checked) {
-        velocidad = 4000;
+        velocidad = 4200;
         simboloMovil.setColor(new Color([230, 0, 0, 0.95]));
       }
       // Velocidad del móvil
       setTimeout(moverMovil, velocidad);
     } else {
+      movilLayer.clear();
       alert("La simulación ha sido finalizada con éxito");
     }
   }
@@ -650,12 +668,13 @@ require([
   on(dom.byId("stop"), "click", stopSimulacion);
 
   function stopSimulacion() {
-    terminarSIM = true;
+    terminar = true;
     $("#stop").prop("disabled", true);
     $("#start").prop("disabled", false);
     $("#borrarRutaBtn").prop("disabled", false);
     $("#ptosList").prop("hidden", false);
     $("#infoList").prop("hidden", true);
+
   }
 
   /**************************************************PRINTER******************************************************************************************************* */
@@ -675,8 +694,8 @@ require([
             copyrightText: "SIG"
           },
           exportOptions: {
-            width: 500,
-            height: 400,
+            width: 640,
+            height: 480,
             dpi: 96
           }
         }
