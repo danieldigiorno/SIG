@@ -320,7 +320,7 @@ require([
     $(dom.byId("start")).prop("disabled", false);
     $(dom.byId("borrarRutaBtn")).prop("disabled", false);
     $(dom.byId("guardarRutaBtn")).prop("disabled", false);
-    document.getElementById("rutaBtn").innerHTML = "Calcular ruta";
+    document.getElementById("rutaBtn").innerHTML = "Trazar ruta";
   }
 
   // Botón para borrar rutas
@@ -506,7 +506,6 @@ require([
           console.log("No se pudo obtener el state : " + err);
         });
 
-        
         queryTaskStates.on("complete", function(evt) {
           stateAnterior = estadoActual;
           estadoActual = evt.featureSet.features[0].attributes.ST_ABBREV;
@@ -518,9 +517,9 @@ require([
               3
             )
           );
-          var geometryEstado= evt.featureSet.features[0].geometry;
+          var geometryEstado = evt.featureSet.features[0].geometry;
           var graphicEstado = new Graphic(geometryEstado, symbolEstado);
-          
+
           // Cambio de color del buffer al cambiar de estado
           if (stateAnterior != estadoActual && stateAnterior != "") {
             if (colorActual == 1) {
@@ -675,7 +674,6 @@ require([
     $("#borrarRutaBtn").prop("disabled", false);
     $("#ptosList").prop("hidden", false);
     $("#infoList").prop("hidden", true);
-
   }
 
   /**************************************************PRINTER******************************************************************************************************* */
