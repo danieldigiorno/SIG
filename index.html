@@ -40,8 +40,9 @@
 					<span class="close">&times;</span>
 					<h1 class="modal-title">INSTRUCCIONES</h1>
 					<p>Ingrese la dirección de los puntos de la ruta en la barra de búsqueda. Podrá eliminar puntos o intercambiar su orden una vez seleccionados. </p>
-					<p>Al finalizar, confirme con el botón "Calcular ruta". Se visualizará la ruta desplegada en el mapa. Luego, indique los parámetros de la simulación.</p>
-					<p>Con los controles en la barra superior puede comenzar o detener la simulación. Además puede modificar los parámetros durante la simulación.</p>
+					<p>Al finalizar, confirme con el botón "Trazar ruta" para visualizar la ruta desplegada en el mapa. Por otro lado, puede seleccionar "Borrar ruta" para deshacer la operación.</p>
+					<p>Opcionalmente, puede guardar la ruta ingresada para recuperarla en otro momento si lo desea, seleccionando "Subir puntos" junto con una de las rutas ofrecidas en el listado bajo el título "Rutas precargadas". También puede seleccionar "Descargar puntos" para obtener todos los puntos almacenados previamente.</p>
+					<p>Por último, indique los parámetros de la simulación - que a su vez son modificables durante la simulación - y con los controles en la barra superior puede comenzarla o detenerla.</p>
 				</div>
 			</div>
 		</div>
@@ -64,10 +65,11 @@
 					<div id="list-items"></div>
 				</div>
 				<br>
+				<button id="borrarPtosBtn" class="boton-eliminar" data-toggle="tooltip">Eliminar todos</button>
+				<br><br>
 				<div class="boton-ruta">
-					<button id="subirPtosBtn" class="boton-secundario" data-toggle="tooltip">Cargar</button>
-					<button id="borrarPtosBtn" class="boton-secundario" data-toggle="tooltip">Eliminar todos</button>
-					<button id="descargarPtosBtn" class="boton-secundario" data-toggle="tooltip">Descargar</button>
+					<button id="subirPtosBtn" class="boton-secundario" data-toggle="tooltip">Subir puntos</button>
+					<button id="descargarPtosBtn" class="boton-secundario" data-toggle="tooltip">Descargar puntos</button>
 				</div>
 				<br>
 				<div class="boton-ruta">
@@ -91,10 +93,10 @@
 				</select>
 
 				<div style = "display: inline-flex;">
-					<button id="cargarRutaBtn" class="boton-secundario" data-toggle="tooltip" title="Trazar ruta" style="padding: 0px 30px;">
+					<button id="cargarRutaBtn" class="boton-secundario" data-toggle="tooltip" title="Trazar ruta">
 						Trazar ruta
 					</button>
-					<button id="guardarRutaBtn" class="boton-secundario" data-toggle="tooltip" title="Guardar ruta" style="padding: 0px 32px;">
+					<button id="guardarRutaBtn" class="boton-secundario" data-toggle="tooltip" title="Guardar ruta">
 						Guardar ruta
 					</button>
 				</div>
